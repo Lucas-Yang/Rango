@@ -1,4 +1,4 @@
-#rango
+# rango
 ## 项目介绍
 **rango** 名字来源于电影《兰戈》， 主要是想致敬Django
 
