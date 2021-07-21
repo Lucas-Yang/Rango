@@ -10,11 +10,11 @@ MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3
             '0Compass&ssl=false'
 MONGO_DB = 'burytest'
 
-MYSQL_HOST = "ops-db-5129-w-3308.testdb.bilibili.co"
-MYSQL_USERNAME = "hassan"
-MYSQL_PASSWORD = "4OLl5gQzFfvMUjT2PeswaBGuEi7YJRm3"
-MYSQL_DATABASE = "hassan"
-MYSQL_PORT = 3308
+MYSQL_HOST = "127.0.0.1"
+MYSQL_USERNAME = "root"
+MYSQL_PASSWORD = ""
+MYSQL_DATABASE = "test"
+MYSQL_PORT = 3306
 
 
 class MySQLClient(object):
@@ -35,14 +35,17 @@ class MySQLClient(object):
         self.password = password
         self.database = database
         self.port = port
-        self.db = pymysql.connect(self.host, self.username, self.password, self.database, self.port, charset='utf8')
+        self.db = pymysql.connect(host=self.host, port=self.port,
+                                  user=self.username, password=self.password,
+                                  db=self.database, charset='utf8'
+                                  )
+        self.cursor = self.db.cursor()
 
     def insert_db(self, sql):
         """数据插入
         :param sql:
         :return:
         """
-        self.cursor = self.db.cursor()
         try:
             self.cursor.execute(sql)
             self.db.commit()
@@ -58,7 +61,6 @@ class MySQLClient(object):
         :param sql:
         :return:
         """
-        self.cursor = self.db.cursor()
         try:
             self.cursor.execute(sql)
             self.db.commit()
@@ -74,14 +76,12 @@ class MySQLClient(object):
         :param sql:
         :return:
         """
-        self.cursor = self.db.cursor()
         try:
             # 执行sql
             self.cursor.execute(sql)
-            # tt = self.cursor.execute(sql) # 返回 更新数据 条数 可以根据 返回值 判定处理结果
-            # print(tt)
             self.db.commit()
-        except:
+        except Exception as err:
+            print(err)
             # 发生错误时回滚
             self.db.rollback()
         finally:
@@ -92,13 +92,13 @@ class MySQLClient(object):
         :param sql:
         :return:
         """
-        self.cursor = self.db.cursor()
         try:
             self.cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
             data = self.cursor.fetchall()  # 返回所有记录列表
             return data
-        except:
-            print('Error: unable to fecth data')
+        except Exception as err:
+            print(err)
+            print('Error: unable to fetch data')
         finally:
             self.cursor.close()
 
@@ -145,9 +145,7 @@ class MyMongoClient(object):
 
 
 if __name__ == "__main__":
-    mongo_client = MyMongoClient()
-    # mongo_client.insert('fuzz_data', {"ip": "127.0.0.1", "age": 0, "path": "x1/name"})
-    cursor = mongo_client.query('fuzz_data', {"path": "/x/resource/fission/check/device"}).sort("create_time",
-                                                                                                -1).limit(1)
-    for data in cursor:
-        print(data)
+    mysql_handler = MySQLClient()
+    sql = "INSERT INTO t_user(email, password, role, status) VALUES ('1', '1', 1, 1)"
+    mysql_handler.insert_db(sql)
+    mysql_handler.close_db()
