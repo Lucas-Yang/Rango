@@ -10,33 +10,84 @@
 
 ## 接口文档
 ### 用户管理接口
+#####  1 用户注册
+- 接口描述： 
+- Method: POST
+- URL: 
+- Headers:
+- Body:
+
+#####  2 用户修改
+- 接口描述： 
+- Method: PUT
+- URL: 
+- Headers:
+- Body:
+
+#####  3 用户查询
+- 接口描述： 
+- Method: GET
+- URL: 
+- Headers:
+- Body:
+
+#####  4 用户删除
+- 接口描述： 
+- Method: DELETE
+- URL: 
+- Headers:
+- Body:
+
 
 ### 标注任务接口
 
-#### 1 发起任务借口
+#####  1 发起任务
 - 接口描述： 
 - Method: POST
 - URL: 
 - Headers:
 - Body:
 
-#### 2 删除任务接口
+##### 2 删除任务
 - 接口描述： 
 - Method: POST
 - URL: 
 - Headers:
 - Body:
 
-#### 3 修改任务接口
+##### 3 修改任务
 - 接口描述： 
 - Method: POST
 - URL: 
 - Headers:
 - Body:
 
-#### 4 查询任务接口
+##### 4 查询任务
 
 ### 评估任务接口
+
+#####  1 发起任务
+- 接口描述： 
+- Method: POST
+- URL: 
+- Headers:
+- Body:
+
+##### 2 删除任务
+- 接口描述： 
+- Method: POST
+- URL: 
+- Headers:
+- Body:
+
+##### 3 修改任务
+- 接口描述： 
+- Method: POST
+- URL: 
+- Headers:
+- Body:
+
+##### 4 查询任务
 
 
 ## 迭代计划
