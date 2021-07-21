@@ -4,6 +4,7 @@ import asyncio
 import json
 
 from fastapi import APIRouter
+from app.common.data import UserLoginItem
 
 user_app = APIRouter()
 
@@ -33,11 +34,11 @@ async def user_login(user_id: str):
 
 
 @user_app.post('/login')
-async def user_login():
+async def user_login(item: UserLoginItem):
     """
     :return:
     """
-    pass
+    return item
 
 
 
