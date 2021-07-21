@@ -38,6 +38,13 @@
 - Headers:
 - Body:
 
+##### 5 用户登陆
+- 接口描述： 
+- Method: POST
+- URL: 
+- Headers:
+- Body:
+
 
 ### 标注任务接口
 
@@ -50,22 +57,27 @@
 
 ##### 2 删除任务
 - 接口描述： 
-- Method: POST
+- Method: DELETE
 - URL: 
 - Headers:
 - Body:
 
 ##### 3 修改任务
 - 接口描述： 
-- Method: POST
+- Method: PUT
 - URL: 
 - Headers:
 - Body:
 
 ##### 4 查询任务
+- 接口描述： 
+- Method: GET
+- URL: 
+- Headers:
+- Body:
+
 
 ### 评估任务接口
-
 #####  1 发起任务
 - 接口描述： 
 - Method: POST
@@ -75,19 +87,24 @@
 
 ##### 2 删除任务
 - 接口描述： 
-- Method: POST
+- Method: DELETE
 - URL: 
 - Headers:
 - Body:
 
 ##### 3 修改任务
 - 接口描述： 
-- Method: POST
+- Method: PUT
 - URL: 
 - Headers:
 - Body:
 
 ##### 4 查询任务
+- 接口描述： 
+- Method: GET
+- URL: 
+- Headers:
+- Body:
 
 
 ## 迭代计划
