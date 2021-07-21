@@ -1,3 +1,5 @@
+pymysql
+pymongo
 jsonschema
 pydantic
 uvicorn

@@ -20,6 +20,7 @@ MYSQL_PORT = 3308
 class MySQLClient(object):
     """mysql 操作类
     """
+
     def __init__(self, host=MYSQL_HOST, username=MYSQL_USERNAME, password=MYSQL_PASSWORD,
                  database=MYSQL_DATABASE, port=MYSQL_PORT):
         """init
@@ -47,8 +48,8 @@ class MySQLClient(object):
             self.db.commit()
         except BaseException as error:
             print(error)
-            raise Exception("db insert error")
             self.db.rollback()
+            raise Exception("db insert error")
         finally:
             self.cursor.close()
 
@@ -93,8 +94,8 @@ class MySQLClient(object):
         """
         self.cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql) # 返回 查询数据 条数 可以根据 返回值 判定处理结果
-            data = self.cursor.fetchall() # 返回所有记录列表
+            self.cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
+            data = self.cursor.fetchall()  # 返回所有记录列表
             return data
         except:
             print('Error: unable to fecth data')
@@ -111,6 +112,7 @@ class MySQLClient(object):
 class MyMongoClient(object):
     """mongo 操作类
     """
+
     def __init__(self):
         client = MongoClient(MONGO_URL, connect=False)
         self.db = client.get_database(MONGO_DB)
@@ -145,6 +147,7 @@ class MyMongoClient(object):
 if __name__ == "__main__":
     mongo_client = MyMongoClient()
     # mongo_client.insert('fuzz_data', {"ip": "127.0.0.1", "age": 0, "path": "x1/name"})
-    cursor = mongo_client.query('fuzz_data', {"path": "/x/resource/fission/check/device"}).sort("create_time", -1).limit(1)
+    cursor = mongo_client.query('fuzz_data', {"path": "/x/resource/fission/check/device"}).sort("create_time",
+                                                                                                -1).limit(1)
     for data in cursor:
         print(data)
