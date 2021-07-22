@@ -39,9 +39,9 @@ class UserModel(object):
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
             if data:
-                return True, data
+                return True, {"email": data[0][0], "role": data[0][1], "status": data[0][1]}
             else:
-                return True, ""
+                return True, {}
         except Exception as error:
             return False, str(error)
 
