@@ -36,7 +36,7 @@ class FormatCheck(object):
         """
         email_pattern = "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"
         role_pattern = ["root", "master", "common"]
-        status_pattern = [1, 0]
+        status_pattern = ["1", "0"]
         try:
             if re.match(email_pattern, update_item.email, re.M | re.I) and update_item.role in role_pattern \
                     and update_item.status in status_pattern:
