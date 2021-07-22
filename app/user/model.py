@@ -7,7 +7,7 @@ from app.common.db import MySQLClient
 class UserModel(object):
     """
     """
-    def __init__(self, item: dict):
+    def __init__(self, item: dict = None):
         """
         """
         self.item = item
@@ -34,6 +34,16 @@ class UserModel(object):
         """
         :return:
         """
+        try:
+            sql = "select email, role, status from t_user where email = '{}'". \
+                format(self.item.get("email"))
+            data = self.__mysql_handler.select_db(sql)
+            if data:
+                return True, data
+            else:
+                return True, ""
+        except Exception as error:
+            return False, str(error)
 
     def close_model(self):
         self.__mysql_handler.close_db()

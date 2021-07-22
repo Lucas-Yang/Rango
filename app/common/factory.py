@@ -29,6 +29,21 @@ class FormatCheck(object):
             self.__loger.error(err)
             return False
 
+    def user_status_check(self, user_email):
+        """
+        :param user_email:
+        :return:
+        """
+        email_pattern = "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"
+        try:
+            if re.match(email_pattern, user_email, re.M | re.I):
+                return True
+            else:
+                return False
+        except BaseException as err:
+            self.__loger.error(err)
+            return False
+
 
 if __name__ == '__main__':
     handler = FormatCheck()
