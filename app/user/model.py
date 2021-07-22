@@ -1,5 +1,7 @@
 """ 数据交互
 """
+from pymysql import IntegrityError
+
 from app.common.db import MySQLClient
 
 
@@ -16,10 +18,13 @@ class UserModel(object):
         """
         :return:
         """
-        mysql_handler = MySQLClient()
-        sql = "INSERT INTO t_user(email, password, role, status) VALUES ({}, {}, 1, 1)".\
-            format(self.item.get("email"), self.item.get("password"))
-        mysql_handler.insert_db(sql)
+        try:
+            sql = "INSERT INTO t_user(email, password, role, status) VALUES ({}, {}, 'common', 1)". \
+                format('\'' + self.item.get("email") + '\'', self.item.get("password"))
+            self.__mysql_handler.insert_db(sql)
+            return True, "register success!"
+        except Exception as error:
+            return False, str(error)
 
     def user_login(self):
         """

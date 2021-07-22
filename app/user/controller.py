@@ -20,8 +20,12 @@ def user_register(item: UserRegisterItem):
     :return:
     """
     if format_handler.user_register_check(item):
-        user_handler = UserModel(item.json())
-        return UserModelReturn(code=0, msg="success", data={"dd": 1})
+        user_handler = UserModel(item.dict())
+        reg_status, msg = user_handler.user_register()
+        if reg_status:
+            return UserModelReturn(code=0, msg="success", data={"info": msg})
+        else:
+            return UserModelReturn(code=2, msg="internal error", data={"info": msg})
     else:
         return UserModelReturn(code=1, msg="input error")
 
