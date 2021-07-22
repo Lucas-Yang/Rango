@@ -1,6 +1,5 @@
 """ 数据交互
 """
-from pymysql import IntegrityError
 
 from app.common.db import MySQLClient
 
