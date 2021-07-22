@@ -25,6 +25,20 @@ class UserModel(object):
         except Exception as error:
             return False, str(error)
 
+    def user_update(self):
+        """ 用户信息更新
+        :return:
+        """
+        try:
+            sql = "INSERT INTO t_user(email, password, role, status) VALUES ({}, {}, 'common', 1)". \
+                format('\'' + self.item.get("email") + '\'', self.item.get("password"))
+            self.__mysql_handler.insert_db(sql)
+            return True, "register success!"
+        except Exception as error:
+            return False, str(error)
+
+
+
     def user_login(self):
         """
         :return:

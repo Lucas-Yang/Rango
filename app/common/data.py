@@ -38,6 +38,14 @@ class UserRegisterItem(BaseModel):
     password: str
 
 
+class UserUpdateItem(BaseModel):
+    """ 用户模块-用户信息更新
+    """
+    email: str
+    role: str
+    status: str
+
+
 class UserModelReturn(BaseModel):
     """ 用户模块 - 返回值
     """
