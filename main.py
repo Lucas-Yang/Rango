@@ -16,4 +16,5 @@ app.include_router(user_app, prefix="/user")
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host="0.0.0.0", port=8000, workers=multiprocessing.cpu_count())
+    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True, debug=True,
+                workers=multiprocessing.cpu_count())
