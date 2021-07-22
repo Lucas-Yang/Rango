@@ -30,14 +30,15 @@ class UserModel(object):
         :return:
         """
         try:
-            sql = "INSERT INTO t_user(email, password, role, status) VALUES ({}, {}, 'common', 1)". \
-                format('\'' + self.item.get("email") + '\'', self.item.get("password"))
+            sql = "UPDATE t_user SET role='{}',status='{}'  WHERE email = '{}'". \
+                format(self.item.get("role"),
+                       self.item.get("status"),
+                       self.item.get("email")
+                       )
             self.__mysql_handler.insert_db(sql)
-            return True, "register success!"
+            return True, "update success!"
         except Exception as error:
             return False, str(error)
-
-
 
     def user_login(self):
         """
