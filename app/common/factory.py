@@ -1,3 +1,5 @@
+import re
+
 from jsonschema import validate
 
 from app.common.logger import LogManager
@@ -11,56 +13,23 @@ class FormatCheck(object):
     def __init__(self):
         self.__loger = LogManager().logger
 
-    def mock_fuzz_format_check(self, input_json):
-        """ mock-server输入接口 参数校验
-        :param input_json:
+    def user_register_check(self, register_item):
+        """ 用户管理 - 注册校验
+        :param register_item:
         :return:
         """
-        json_schema = {
-            "type": "object",
-            "requiredv": True,
-            "properties": {
-                "rule_id": {"type": "integer"},
-                "env_id": {
-                    "description": "env_id is wrong",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "host": {
-                    "type": "string",
-                    "minLength": 1},
-                "tag": {
-                    "type": "string",
-                    "minLength": 1},
-                "path": {
-                    "type": "string",
-                    "minLength": 1},
-                "fuzz_response": {
-                    "type": "string",
-                    "minLength": 1},
-                "fuzz_keys": {
-                    "type": "string"},
-                "status": {
-                    "type": "integer",
-                    "enum": [1, -1]},
-                "creator": {
-                    "type": "string",
-                    "minLength": 1}
-            },
-            "required": [
-                "rule_id",
-                "env_id",
-                "host",
-                "tag",
-                "path",
-                "fuzz_response",
-                "fuzz_keys",
-                "creator"
-            ]
-        }
+        email_pattern = "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"
+        password_pattern = "(.*)"
         try:
-            validate(input_json, json_schema)
+            if re.match(email_pattern, register_item.email, re.M | re.I):
+                return True
+            else:
+                return False
         except BaseException as err:
             self.__loger.error(err)
             return False
-        return True
+
+
+if __name__ == '__main__':
+    handler = FormatCheck()
+    print(handler.user_register_check(11))

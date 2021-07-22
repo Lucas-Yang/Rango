@@ -4,17 +4,20 @@ import asyncio
 import json
 
 from fastapi import APIRouter
-from app.common.data import UserLoginItem
+from app.common.data import UserLoginItem, UserRegisterItem
+from app.common.factory import FormatCheck
 
 user_app = APIRouter()
-
+format_handler = FormatCheck()
 
 @user_app.post('/register')
-async def user_register():
+async def user_register(item: UserRegisterItem):
     """
     :return:
     """
-    pass
+    if format_handler.user_register_check(item):
+        return item
+    return
 
 
 @user_app.put('/update')
