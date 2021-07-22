@@ -4,6 +4,7 @@
 import pymysql
 import time
 from pymongo import MongoClient
+from pymysql import IntegrityError
 
 MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
             '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
@@ -41,7 +42,7 @@ class MySQLClient(object):
                                   )
         self.cursor = self.db.cursor()
 
-    def insert_db(self, sql):
+    def insert_db(self, sql: str):
         """数据插入
         :param sql:
         :return:
@@ -52,7 +53,7 @@ class MySQLClient(object):
         except BaseException as error:
             print(error)
             self.db.rollback()
-            raise Exception("db insert error")
+            raise Exception(error)
         finally:
             self.cursor.close()
 
