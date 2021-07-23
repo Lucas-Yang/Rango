@@ -1,7 +1,5 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
-import asyncio
-import json
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
