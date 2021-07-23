@@ -1,6 +1,9 @@
 """ 数据交互
 """
+from fastapi import HTTPException, status
+
 from app.common.db import MySQLClient
+from app.user.utils.jwt import UserJwt
 
 
 class UserModel(object):
@@ -11,6 +14,7 @@ class UserModel(object):
         """
         self.item = item
         self.__mysql_handler = MySQLClient()
+        self.__jwt_handler = UserJwt(self.item)
 
     def user_register(self):
         """
@@ -43,22 +47,55 @@ class UserModel(object):
         """
         :return:
         """
-        pass
+        try:
+            user_status, user_info = self.user_status()
+            if user_status:
+                acs_token = self.__jwt_handler.create_access_token()
+                return True, acs_token
+            else:
+                return False, user_info
+        except Exception as err:
+            return False, str(err)
 
     def user_status(self):
         """
         :return:
         """
         try:
-            sql = "select email, role, status from t_user where email = '{}'". \
+            sql = "select email, role, status, password from t_user where email = '{}'". \
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
+            print(data)
             if data:
-                return True, {"email": data[0][0], "role": data[0][1], "status": data[0][1]}
+                if data[0][3] == self.item.get("password"):
+                    return True, {"email": data[0][0], "role": data[0][1], "status": data[0][2]}
+                else:
+                    return False, "密码错误"
             else:
-                return True, {}
+                return False, "用户未注册"
         except Exception as error:
             return False, str(error)
+
+    def user_auth(self, token):
+        """ 用户认证
+        :return:
+        """
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="认证失败",
+            headers={'WWW-Authenticate': "Bearer"}
+        )
+        # 验证token
+        try:
+            payload = self.__jwt_handler.check_jwt_token(token)
+            user_email = payload.get('email')
+            if not user_email:
+                raise credentials_exception
+            else:
+                return user_email
+        except Exception as e:
+            print(f'认证异常: {e}')
+            raise credentials_exception
 
     def close_model(self):
         self.__mysql_handler.close_db()
