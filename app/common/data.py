@@ -1,6 +1,8 @@
 """ 所有app 共用 数据
 """
 from enum import Enum, unique
+from pydantic import BaseModel
+from typing import Optional
 
 
 # ########################## 通用错误码定义 ###########################
