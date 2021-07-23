@@ -5,7 +5,7 @@ import json
 
 from fastapi import APIRouter
 
-from app.common.data import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
+from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
 from app.common.factory import FormatCheck
 from app.user.dao import UserModel
 
