@@ -36,3 +36,12 @@ class UserModelReturn(BaseModel):
     code: ReturnCode
     msg: str
     data: Optional[dict]
+
+# ########################## user jwt ###########################
+
+
+class TokenItem(BaseModel):
+    """ jwt token
+    """
+    access_token: str
+    token_type: str
