@@ -3,8 +3,8 @@
 import asyncio
 import json
 
-from fastapi import APIRouter, Depends, Body, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordBearer
 
 
 from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
