@@ -44,6 +44,7 @@ class UserModel(object):
         """
         :return:
         """
+        pass
 
     def user_status(self):
         """

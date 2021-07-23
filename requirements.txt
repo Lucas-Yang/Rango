@@ -1,3 +1,5 @@
+PyJWT
+jose
 pymysql
 pymongo
 jsonschema
