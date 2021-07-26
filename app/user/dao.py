@@ -6,7 +6,7 @@ from app.common.db import MySQLClient
 from app.user.utils.jwt import UserJwt
 
 
-class UserModel(object):
+class UserDao(object):
     """
     """
     def __init__(self, item: dict = None):
@@ -21,7 +21,7 @@ class UserModel(object):
         :return:
         """
         try:
-            sql = "INSERT INTO t_user(email, password, role, status) VALUES ({}, {}, 'common', 1)". \
+            sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ({}, {}, 'common', 1)". \
                 format('\'' + self.item.get("email") + '\'', self.item.get("password"))
             self.__mysql_handler.insert_db(sql)
             return True, "register success!"
@@ -33,7 +33,7 @@ class UserModel(object):
         :return:
         """
         try:
-            sql = "UPDATE t_user SET role='{}',status='{}'  WHERE email = '{}'". \
+            sql = "UPDATE user SET role='{}',status='{}'  WHERE u_email = '{}'". \
                 format(self.item.get("role"),
                        self.item.get("status"),
                        self.item.get("email")
@@ -62,7 +62,7 @@ class UserModel(object):
         :return:
         """
         try:
-            sql = "select email, role, status, password from t_user where email = '{}'". \
+            sql = "select u_email, role, status, u_password from user where u_email = '{}'". \
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
             print(data)

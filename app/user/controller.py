@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
 from app.common.factory import FormatCheck
-from app.user.dao import UserModel
+from app.user.dao import UserDao
 
 user_app = APIRouter()
 format_handler = FormatCheck()
@@ -20,7 +20,7 @@ def user_register(item: UserRegisterItem):
     :return:
     """
     if format_handler.user_register_check(item):
-        user_handler = UserModel(item.dict())
+        user_handler = UserDao(item.dict())
         reg_status, msg = user_handler.user_register()
         if reg_status:
             return UserModelReturn(code=0, msg="success", data={"info": msg})
@@ -36,7 +36,7 @@ async def user_update(item: UserUpdateItem):
     :return:
     """
     if format_handler.user_update_check(item):
-        user_handler = UserModel(item.dict())
+        user_handler = UserDao(item.dict())
         reg_status, msg = user_handler.user_update()
         if reg_status:
             return UserModelReturn(code=0, msg="success", data={"info": msg})
@@ -52,7 +52,7 @@ async def user_status(user_id: str):
     :return:
     """
     if format_handler.user_status_check(user_id):
-        user_handler = UserModel({"email": user_id})
+        user_handler = UserDao({"email": user_id})
         reg_status, msg = user_handler.user_status()
         if reg_status:
             return UserModelReturn(code=0, msg="success", data={"data": msg})
@@ -68,7 +68,7 @@ async def user_login(item: UserLoginItem):
     :return:
     """
     if format_handler.user_register_check(item):
-        user_handler = UserModel(item.dict())
+        user_handler = UserDao(item.dict())
         acs_status, user_token = user_handler.user_login()
         if acs_status:
             return UserModelReturn(code=0, msg="success", data={"Token": user_token})
@@ -84,5 +84,5 @@ async def user_login(token: str = Depends(oauth2_scheme)):
     :param token:
     :return:
     """
-    user_handler = UserModel()
+    user_handler = UserDao()
     return user_handler.user_auth(token)
