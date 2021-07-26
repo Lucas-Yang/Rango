@@ -18,7 +18,7 @@ class UserJwt(object):
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=150)
+            expire = datetime.utcnow() + timedelta(minutes=1500)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, self.__SECRET_KEY, algorithm=self.__ALGORITHM)
         return encoded_jwt
