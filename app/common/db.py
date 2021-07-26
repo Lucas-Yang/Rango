@@ -3,6 +3,8 @@
 
 import pymysql
 import time
+import redis
+import aioredis
 from pymongo import MongoClient
 from pymysql import IntegrityError
 
@@ -143,6 +145,34 @@ class MyMongoClient(object):
         :return:
         """
         return self.db.get_collection(collection).find(select, no_cursor_timeout=True)
+
+
+class RedisClient(object):
+    """ redis 操作封装类
+    """
+    def __init__(self, host='localhost', port=6379, decode_responses=True):
+        """
+        """
+        self.__pool = redis.ConnectionPool(host=host, port=port, decode_responses=True)
+        self.__redis_cli = redis.Redis(connection_pool=self.__pool)
+
+    def insert_data(self, key=None, value=None):
+        """
+        """
+        self.__redis_cli.set(key, value)
+
+    def get_data(self, key):
+        """
+        """
+        self.__redis_cli.get(key)
+
+    def delete_data(self, key):
+        """
+        """
+
+    def update_data(self, key):
+        """
+        """
 
 
 if __name__ == "__main__":
