@@ -6,7 +6,6 @@ import time
 import redis
 import aioredis
 from pymongo import MongoClient
-from pymysql import IntegrityError
 
 MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
             '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
@@ -14,9 +13,9 @@ MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3
 MONGO_DB = 'burytest'
 
 MYSQL_HOST = "127.0.0.1"
-MYSQL_USERNAME = "root"
-MYSQL_PASSWORD = ""
-MYSQL_DATABASE = "test"
+MYSQL_USERNAME = "test1"
+MYSQL_PASSWORD = "test1"
+MYSQL_DATABASE = "rango"
 MYSQL_PORT = 3306
 
 
@@ -96,6 +95,7 @@ class MySQLClient(object):
         :return:
         """
         try:
+            print(id(self.cursor))
             self.cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
             data = self.cursor.fetchall()  # 返回所有记录列表
             return data
