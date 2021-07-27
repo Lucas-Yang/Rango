@@ -41,69 +41,72 @@ class MySQLClient(object):
                                   user=self.username, password=self.password,
                                   db=self.database, charset='utf8'
                                   )
-        self.cursor = self.db.cursor()
+        # self.cursor = self.db.cursor()
 
     def insert_db(self, sql: str):
         """数据插入
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except BaseException as error:
             print(error)
             self.db.rollback()
             raise Exception(error)
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def delete_db(self, sql):
         """数据删除
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except BaseException as err:
             print(err)
             # 发生错误时回滚
             self.db.rollback()
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def update_db(self, sql):
         """数据刷新
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
             # 执行sql
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except Exception as err:
             print(err)
             # 发生错误时回滚
             self.db.rollback()
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def select_db(self, sql):
         """数据库查询
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            print(id(self.cursor))
-            self.cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
-            data = self.cursor.fetchall()  # 返回所有记录列表
+            cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
+            data = cursor.fetchall()  # 返回所有记录列表
             return data
         except Exception as err:
             print(err)
             print('Error: unable to fetch data')
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def close_db(self):
         """
@@ -177,6 +180,6 @@ class RedisClient(object):
 
 if __name__ == "__main__":
     mysql_handler = MySQLClient()
-    sql = "INSERT INTO t_user(email, password, role, status) VALUES ('1', '1', 1, 1)"
+    sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ('luoyadong@bilibili.com', 'test', 'root', 1)"
     mysql_handler.insert_db(sql)
     mysql_handler.close_db()

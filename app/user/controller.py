@@ -31,13 +31,13 @@ def user_register(item: UserRegisterItem):
 
 
 @user_app.put('/update', response_model=UserModelReturn, summary="用户信息更新，主要是root管理员调用")
-async def user_update(item: UserUpdateItem):
+async def user_update(item: UserUpdateItem, token: str = Depends(oauth2_scheme)):
     """
     :return:
     """
     if format_handler.user_update_check(item):
         user_handler = UserDao(item.dict())
-        reg_status, msg = user_handler.user_update()
+        reg_status, msg = user_handler.user_update(token=token)
         if reg_status:
             return UserModelReturn(code=0, msg="success", data={"info": msg})
         else:
