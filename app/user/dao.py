@@ -21,10 +21,14 @@ class UserDao(object):
         :return:
         """
         try:
-            sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ({}, {}, 'common', 1)". \
-                format('\'' + self.item.get("email") + '\'', self.item.get("password"))
-            self.__mysql_handler.insert_db(sql)
-            return True, "register success!"
+            user_status, user_info = self.user_status()
+            if not user_status:
+                sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ({}, {}, 'common', 1)". \
+                    format('\'' + self.item.get("email") + '\'', self.item.get("password"))
+                self.__mysql_handler.insert_db(sql)
+                return True, "register success!"
+            else:
+                return False, "register failed, user exist"
         except Exception as error:
             return False, str(error)
 
@@ -65,7 +69,6 @@ class UserDao(object):
             sql = "select u_email, role, status, u_password from user where u_email = '{}'". \
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
-            print(data)
             if data:
                 if data[0][3] == self.item.get("password"):
                     return True, {"email": data[0][0], "role": data[0][1], "status": data[0][2]}
