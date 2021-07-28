@@ -1,5 +1,6 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
+import asyncio
 
 from fastapi import APIRouter, Depends
 
@@ -106,3 +107,12 @@ async def user_login(token: str = Depends(oauth2_scheme)):
     """
     user_handler = UserDao()
     return user_handler.user_auth(token)
+
+
+@user_app.get('/ping', summary="test")
+async def test():
+    """
+    :return:
+    """
+    await asyncio.sleep(10)
+    return {"code": 0, "msg": "hello Rango"}
