@@ -5,7 +5,7 @@ import json
 
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from app.bin.model import BinModelReturn, TaggingTaskCreate
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
@@ -59,9 +59,25 @@ async def evaluate_video_task_update():
     pass
 
 
-@video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务查询")
-async def evaluate_video_task_status(task_id: str):
-    """ 评估任务查询
+@video_app.get('/evaluation/task/single-status', response_model=BinModelReturn, summary="单条评估任务查询")
+async def single_evaluate_video_task_status(task_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.get('/evaluation/task/personal-status', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
+async def personal_evaluate_video_task_status(user_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务总查询")
+async def evaluate_video_task_status(item: TaggingTaskStatus):
+    """
     :return:
     """
     pass

@@ -6,6 +6,7 @@ from enum import Enum, unique
 
 from app.common.data import ReturnCode
 
+
 @unique
 class TagTypes(Enum):
     """ 错误码枚举
@@ -21,10 +22,24 @@ class BinModelReturn(BaseModel):
     msg: str
     data: Optional[dict]
 
+# ########################## tag 模块数据定义 ###########################
+
 
 class TaggingTaskCreate(BaseModel):
     """ 标注任务模块- 创建任务
     """
     tagging_type: TagTypes
     file_list: list  # 二维数组，包含一次任务的所有数据对
+
+# ########################## evaluation 模块数据定义 ###########################
+
+
+class TaggingTaskStatus(BaseModel):
+    """ 标注任务模块 - 总查询任务接口
+    """
+    page_size: int
+    page_num: int
+
+
+
 
