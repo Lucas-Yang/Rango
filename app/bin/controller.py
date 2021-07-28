@@ -4,12 +4,11 @@ import asyncio
 import json
 
 from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.security import OAuth2PasswordBearer
 
 from app.bin.model import BinModelReturn, TaggingTaskCreate
+from app.user import oauth2_scheme
 
 video_app = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='user/register')
 
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
