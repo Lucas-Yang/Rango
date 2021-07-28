@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import json
-
+import uuid
 from fastapi import APIRouter
 
 video_app = APIRouter()
@@ -22,6 +22,15 @@ async def mos_video_task_update():
     :return:
     """
     pass
+
+
+@video_app.get('/get_task_sessionid/')
+async def get_task_sessionid():
+    session_id =  uuid.uuid4()
+    """ 获取本次任务id
+    :return:
+    """
+    return session_id[:14]
 
 
 @video_app.get('/tagging/task/status')
