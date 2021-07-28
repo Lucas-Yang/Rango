@@ -3,8 +3,9 @@
 
 import pymysql
 import time
+import redis
+import aioredis
 from pymongo import MongoClient
-from pymysql import IntegrityError
 
 MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
             '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
@@ -12,9 +13,9 @@ MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3
 MONGO_DB = 'burytest'
 
 MYSQL_HOST = "127.0.0.1"
-MYSQL_USERNAME = "root"
-MYSQL_PASSWORD = ""
-MYSQL_DATABASE = "test"
+MYSQL_USERNAME = "test1"
+MYSQL_PASSWORD = "test1"
+MYSQL_DATABASE = "rango"
 MYSQL_PORT = 3306
 
 
@@ -40,68 +41,72 @@ class MySQLClient(object):
                                   user=self.username, password=self.password,
                                   db=self.database, charset='utf8'
                                   )
-        self.cursor = self.db.cursor()
+        # self.cursor = self.db.cursor()
 
     def insert_db(self, sql: str):
         """数据插入
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except BaseException as error:
             print(error)
             self.db.rollback()
             raise Exception(error)
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def delete_db(self, sql):
         """数据删除
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except BaseException as err:
             print(err)
             # 发生错误时回滚
             self.db.rollback()
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def update_db(self, sql):
         """数据刷新
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
             # 执行sql
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.db.commit()
         except Exception as err:
             print(err)
             # 发生错误时回滚
             self.db.rollback()
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def select_db(self, sql):
         """数据库查询
         :param sql:
         :return:
         """
+        cursor = self.db.cursor()
         try:
-            self.cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
-            data = self.cursor.fetchall()  # 返回所有记录列表
+            cursor.execute(sql)  # 返回 查询数据 条数 可以根据 返回值 判定处理结果
+            data = cursor.fetchall()  # 返回所有记录列表
             return data
         except Exception as err:
             print(err)
             print('Error: unable to fetch data')
         finally:
-            self.cursor.close()
+            cursor.close()
 
     def close_db(self):
         """
@@ -145,8 +150,36 @@ class MyMongoClient(object):
         return self.db.get_collection(collection).find(select, no_cursor_timeout=True)
 
 
+class RedisClient(object):
+    """ redis 操作封装类
+    """
+    def __init__(self, host='localhost', port=6379, decode_responses=True):
+        """
+        """
+        self.__pool = redis.ConnectionPool(host=host, port=port, decode_responses=True)
+        self.__redis_cli = redis.Redis(connection_pool=self.__pool)
+
+    def insert_data(self, key=None, value=None):
+        """
+        """
+        self.__redis_cli.set(key, value)
+
+    def get_data(self, key):
+        """
+        """
+        self.__redis_cli.get(key)
+
+    def delete_data(self, key):
+        """
+        """
+
+    def update_data(self, key):
+        """
+        """
+
+
 if __name__ == "__main__":
     mysql_handler = MySQLClient()
-    sql = "INSERT INTO t_user(email, password, role, status) VALUES ('1', '1', 1, 1)"
+    sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ('luoyadong@bilibili.com', 'test', 'root', 1)"
     mysql_handler.insert_db(sql)
     mysql_handler.close_db()

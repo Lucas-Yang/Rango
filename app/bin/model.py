@@ -1,10 +1,38 @@
-""" 数据结构定义, 只存放数据
-"""
 from datetime import datetime, timezone
 from typing import Optional,List,ByteString
 from pydantic import BaseModel, Field, BaseConfig
 import json
+from enum import Enum, unique
 
+from app.common.data import ReturnCode
+
+""" 数据结构定义, 只存放数据
+"""
+
+
+
+
+@unique
+class TagTypes(Enum):
+    """ 错误码枚举
+    """
+    SINGLE_TYPE = 0  # 无参考标注
+    DOUBLE_TYPE = 1  # 有参考视频标注
+
+
+class BinModelReturn(BaseModel):
+    """ 主业务模块 - 返回值
+    """
+    code: ReturnCode
+    msg: str
+    data: Optional[dict]
+
+
+class TaggingTaskCreate(BaseModel):
+    """ 标注任务模块- 创建任务
+    """
+    tagging_type: TagTypes
+    file_list: list  # 二维数组，包含一次任务的所有数据对
 
 class DateEncoder(json.JSONEncoder):
     def default(self, obj):
