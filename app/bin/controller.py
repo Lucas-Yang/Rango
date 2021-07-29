@@ -5,7 +5,7 @@ import json
 
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
@@ -49,6 +49,17 @@ async def personal_evaluate_video_task_status(user_id: str):
     :return:
     """
     pass
+
+
+@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="评估任务打分回收")
+async def moss_video_task_score(item: TaggingTaskScore):
+    """
+    :return:
+    """
+    print(item)
+
+
+# ############## 自动评估接口 ###############
 
 
 @video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建")
