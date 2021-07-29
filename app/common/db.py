@@ -41,7 +41,11 @@ class MySQLClient(object):
                                   user=self.username, password=self.password,
                                   db=self.database, charset='utf8'
                                   )
-        # self.cursor = self.db.cursor()
+
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(MySQLClient, cls).__new__(cls)
+        return cls.instance
 
     def insert_db(self, sql: str):
         """数据插入
@@ -179,7 +183,9 @@ class RedisClient(object):
 
 
 if __name__ == "__main__":
-    mysql_handler = MySQLClient()
-    sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ('luoyadong@bilibili.com', 'test', 'root', 1)"
-    mysql_handler.insert_db(sql)
-    mysql_handler.close_db()
+    mysql_handler_1 = MySQLClient()
+    mysql_handler_1.close_db()
+    print(mysql_handler_1.db.ping())
+    print(mysql_handler_1.db)
+    mysql_handler_2 = MySQLClient()
+    print(mysql_handler_1 is mysql_handler_2)

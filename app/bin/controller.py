@@ -5,12 +5,11 @@ import json
 import uuid
 from fastapi import APIRouter
 from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.security import OAuth2PasswordBearer
 
-from app.bin.model import BinModelReturn, TaggingTaskCreate
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore
+from app.user import oauth2_scheme
 
 video_app = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='user/register')
 
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
@@ -47,12 +46,31 @@ async def mos_video_task_status(task_id: str):
     pass
 
 
-@video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
-async def mos_video_task_delete():
-    """ 标注任务删除
+@video_app.get('/tagging/task/single-status', response_model=BinModelReturn, summary="单条评估任务查询")
+async def single_evaluate_video_task_status(task_id: str):
+    """
     :return:
     """
     pass
+
+
+@video_app.get('/tagging/task/personal-status', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
+async def personal_evaluate_video_task_status(user_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="评估任务打分回收")
+async def moss_video_task_score(item: TaggingTaskScore):
+    """
+    :return:
+    """
+    print(item)
+
+
+# ############## 自动评估接口 ###############
 
 
 @video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建")
@@ -71,9 +89,25 @@ async def evaluate_video_task_update():
     pass
 
 
-@video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务查询")
-async def evaluate_video_task_status(task_id: str):
-    """ 评估任务查询
+@video_app.get('/evaluation/task/single-status', response_model=BinModelReturn, summary="单条评估任务查询")
+async def single_evaluate_video_task_status(task_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.get('/evaluation/task/personal-status', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
+async def personal_evaluate_video_task_status(user_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务总查询")
+async def evaluate_video_task_status(item: TaggingTaskStatus):
+    """
     :return:
     """
     pass
