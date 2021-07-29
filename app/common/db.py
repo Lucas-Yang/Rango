@@ -6,7 +6,7 @@ import time
 import redis
 import aioredis
 from pymongo import MongoClient
-
+import app.common.config as config
 MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
             '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
             '0Compass&ssl=false'
@@ -118,17 +118,18 @@ class MySQLClient(object):
 class MyMongoClient(object):
     """mongo 操作类
     """
-
     def __init__(self):
-        client = MongoClient(MONGO_URL, connect=False)
-        self.db = client.get_database(MONGO_DB)
+        self.Mongo_client = MongoClient(config.mongodb_uri, replicaSet="bapi")
+        self.db = self.Mongo_client.mobileautotest
+        self.db.authenticate(name=config.mongodb_user,
+                                         password=config.mongodb_password)
         self.db_initial_time = time.strftime("%Y-%m-%d %H:%M:%S")
 
-    def db(self):
-        """
-        :return:
-        """
-        return self.db
+    # def db(self):
+    #     """
+    #     :return:
+    #     """
+    #     return self.db
 
     def insert(self, collection, data):
         """
