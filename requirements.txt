@@ -1,3 +1,4 @@
+botocore
 aioredis
 redis
 PyJWT
