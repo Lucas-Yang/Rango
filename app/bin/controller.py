@@ -5,6 +5,16 @@ import json
 import uuid
 from fastapi import APIRouter
 from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi.security import OAuth2PasswordBearer
+from app.common.db import MyMongoClient
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskUpdate
+import app.bin.task as task
+import io
+from app.bin.dao import TaggingDao
+
+video_app = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='user/register')
+db = MyMongoClient()
 
 from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore
 from app.user import oauth2_scheme
@@ -13,29 +23,31 @@ video_app = APIRouter()
 
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
-async def mos_video_task_create(item: TaggingTaskCreate, token: str = Depends(oauth2_scheme)):
-    """ 标注任务接口
+async def mos_video_task_create(item: TaggingTaskCreate):
+    """ 创建标注任务接口
     :return:
     """
-    pass
+    task.create_tagging_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
+                             item.expire_data)
+    return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
-@video_app.put('/tagging/task')
-async def mos_video_task_update():
+@video_app.put('/tagging/task', response_model=BinModelReturn, summary="修改标注任务")
+async def mos_video_task_update(item: TaggingTaskUpdate):
     """ 标注任务修改
     :return:
     """
-    pass
+    res = TaggingDao().modify_tagging_task(item)
+    return BinModelReturn(code=0, msg="success", data={"modify_num": res})
 
 
-
-@video_app.get('/get_task_sessionid/')
-async def get_task_sessionid():
-    session_id =  uuid.uuid4()
+@video_app.get('/get-task-id/')
+async def get_task_task_id():
+    session_id = f'{uuid.uuid4()}'
     """ 获取本次任务id
     :return:
     """
-    return session_id[:14]
+    return session_id[:12]
 
 
 @video_app.get('/tagging/task/status', response_model=BinModelReturn, summary="标注任务查询")
@@ -43,23 +55,29 @@ async def mos_video_task_status(task_id: str):
     """ 标注任务查询
     :return:
     """
-    pass
+
+    res = TaggingDao().query_tagging_task(task_id=task_id)
+    return BinModelReturn(code=0, msg="success", data={"task_info": res})
 
 
-@video_app.get('/tagging/task/single-status', response_model=BinModelReturn, summary="单条评估任务查询")
-async def single_evaluate_video_task_status(task_id: str):
-    """
+@video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询")
+async def mos_video_task_status_by_user(user: str, page_num: int, page_size: int):
+    """ 标注任务查询
     :return:
     """
-    pass
+
+    res = TaggingDao().query_tagging_task_by_user(user=user, skip=page_num, limit_num=page_size)
+    return BinModelReturn(code=0, msg="success", data={"task_info": res})
 
 
-@video_app.get('/tagging/task/personal-status', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
-async def personal_evaluate_video_task_status(user_id: str):
+
+@video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
+async def mos_video_task_delete(task_id: str):
+    """ 标注任务删除
+
     """
-    :return:
-    """
-    pass
+    res = TaggingDao().delete_tagging_task(task_id=task_id)
+    return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
 @video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="评估任务打分回收")
@@ -122,18 +140,19 @@ async def evaluate_video_task_delete():
 
 
 @video_app.post('/task-file/upload', response_model=BinModelReturn, summary="单个文件上传到boss接口")
-async def evaluate_video_task_delete(file: UploadFile = File(...)):
+def evaluate_video_task_delete(task_id: str, group_id: int, video_index: int, file: UploadFile = File(...)):
     """ 一个task粒度下，上传单个视频的接口
-    :return:
+    :return:ss
     """
-    file_content = await file.read()
-    file_boss_url = ""
-    return BinModelReturn(code=0, msg="success", data={"file_name": file.filename(), "file_address": file_boss_url})
+    file_content = io.BytesIO(file.file.read())
+    insert_data = task.upload_data(file_content, task_id, group_id, video_index, file.filename)
+    return BinModelReturn(code=0, msg="success", data={"file_name": file.filename, "file_address": str(insert_data)})
 
 
 @video_app.delete('/task-file/delete', response_model=BinModelReturn, summary="单个文件删除")
-async def evaluate_video_task_delete():
+async def evaluate_video_task_delete(fid: str):
     """ 一个task粒度下，删除单个视频的接口
     :return:
     """
-    pass
+    res = TaggingDao().delete_upload_file(fid=fid)
+    return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
