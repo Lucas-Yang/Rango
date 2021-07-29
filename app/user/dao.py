@@ -113,6 +113,23 @@ class UserDao(object):
         except Exception as error:
             return False, str(error)
 
+    def admin_search_user_status(self, token, search_user_email):
+        """ 管理员查询其他用户的接口
+        :param token:
+        :param search_user_email:
+        :return:
+        """
+        admin_user_email = self.user_auth(token)
+        search_status, user_info = self.admin_user_status(admin_user_email)
+        if search_status:
+            user_role = user_info.get("role")
+            if user_role == 'root':
+                return self.admin_user_status(search_user_email)
+            else:
+                return False, "u have not right to query user info"
+        else:
+            return False, user_info
+
     def user_auth(self, token):
         """ 用户认证
         :return:
@@ -140,4 +157,4 @@ class UserDao(object):
 
 if __name__ == '__main__':
     handler = UserDao()
-    print(handler.user_status("luoyadong@bilibili.com"))
+    print(handler.admin_user_status("luoyadong@bilibili.com"))

@@ -2,13 +2,14 @@ from datetime import datetime, timezone
 from typing import Optional, List, ByteString
 from pydantic import BaseModel, Field, BaseConfig
 import json
+
+
 from enum import Enum, unique
 
 from app.common.data import ReturnCode
 
 """ 数据结构定义, 只存放数据
 """
-
 
 @unique
 class TagTypes(Enum):
@@ -24,6 +25,8 @@ class BinModelReturn(BaseModel):
     code: ReturnCode
     msg: str
     data: Optional[dict]
+
+# ########################## tag 模块数据定义 ###########################
 
 
 class TaggingTaskCreate(BaseModel):
@@ -76,3 +79,30 @@ class DateEncoder(json.JSONEncoder):
 #     questionnaire_num: int
 #     collected_questionnaire_num: int
 #     expire_data: Optional[datetime]
+
+
+class TaggingTaskStatus(BaseModel):
+    """ 标注任务模块 - 总查询任务接口
+    """
+    page_size: int
+    page_num: int
+
+
+class TaggingTaskGroupScore(BaseModel):
+    """ 标注任务模块 - 打分回收接口 子数据结构
+    """
+    group_id: int
+    group_score: int
+
+
+class TaggingTaskScore(BaseModel):
+    """ 标注任务模块 - 打分回收接口
+    """
+    task_id: str
+    group_result: List[TaggingTaskGroupScore]
+
+# ########################## evaluation 模块数据定义 ###########################
+
+
+
+
