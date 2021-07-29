@@ -1,6 +1,7 @@
 import socket
 import time
 
+
 class LancerStream(object):
     def __init__(self, logid, sock):
         self.logid = logid

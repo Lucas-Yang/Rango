@@ -1,5 +1,5 @@
 from celery import Celery
-import app.common.config  as config
+import app.common.config as config
 from app.common.boss import Boss
 from app.common.db import MyMongoClient
 import uuid, time
@@ -34,6 +34,7 @@ def upload_data(obj, task_id,group_id,video_index,file_name):
     update_set = {"$set": {'boss_url': boss_url, 'status': 1}}
     collection.update_many(select, update_set, upsert=True)
     return insert_data
+
 
 @app.task()
 def create_tagging_task(task_id, job_name, user, job_type, questionnaire_num, expire_date):

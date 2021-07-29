@@ -1,6 +1,10 @@
+import os
+import uuid
+
 import boto3
 from botocore.config import Config
-import os,uuid
+
+
 class Boss:
     def __init__(self):
         self.bucket_name = 'ep_misc'
@@ -45,8 +49,8 @@ class Boss:
                                                                  ExpiresIn=self.expiration)
             return presigned_link.split('?')[0]
 
-    def upload_data(self,content_data,file_name, need_presigned: bool = True):
-        obj_name = f'{uuid.uuid1().hex[0:4]}'+file_name
+    def upload_data(self, content_data, file_name, need_presigned: bool = True):
+        obj_name = f'{uuid.uuid1().hex[0:4]}' + file_name
         self._client.upload_fileobj(content_data, self.bucket_name, obj_name)
         if need_presigned:
             presigned_link = self._client.generate_presigned_url(ClientMethod='get_object',
