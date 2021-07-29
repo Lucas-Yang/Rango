@@ -31,7 +31,6 @@ class TaggingDao(object):
         pass
 
 
-
 class EvaluationDao(object):
     """ 自动评估层数据接口
     """
