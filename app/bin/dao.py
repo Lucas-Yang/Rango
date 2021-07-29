@@ -7,6 +7,29 @@ from app.bin.utils.Evaluation import NRVideoEvaluationFactory
 class TaggingDao(object):
     """ 数据标准层数据接口
     """
+    def __init__(self):
+        pass
+
+    def get_task_status(self, tagging_task_status_dict: dict):
+        """ 获取所有的待标注任务
+        :param tagging_task_status_dict:
+        :return:
+        """
+        pass
+
+    def get_personal_task_status(self, personal_task_dict: dict):
+        """ 获取个人的创建的task
+        :param personal_task_dict:
+        :return:
+        """
+        pass
+
+    def get_single_task_status(self, single_task_dict: dict):
+        """
+        :return:
+        """
+        pass
+
 
 
 class EvaluationDao(object):
