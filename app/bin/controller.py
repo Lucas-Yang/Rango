@@ -35,9 +35,17 @@ async def mos_video_task_status(task_id: str):
     pass
 
 
-@video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
-async def mos_video_task_delete():
-    """ 标注任务删除
+@video_app.get('/tagging/task/single-status', response_model=BinModelReturn, summary="单条评估任务查询")
+async def single_evaluate_video_task_status(task_id: str):
+    """
+    :return:
+    """
+    pass
+
+
+@video_app.get('/tagging/task/personal-status', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
+async def personal_evaluate_video_task_status(user_id: str):
+    """
     :return:
     """
     pass
