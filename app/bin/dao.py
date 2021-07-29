@@ -1,6 +1,4 @@
-# from app.bin.model import TaggingTaskUpate
 import app.bin.model as model
-import app.bin.dao as sql
 from app.common.db import MyMongoClient
 import time
 # from app.bin.utils.Evaluation import FRVideoEvaluationFactory
@@ -10,7 +8,7 @@ import time
 db = MyMongoClient().db
 
 
-class TaggingDao():
+class TaggingDao(object):
     """
 
     数据标准层数据接口
@@ -74,7 +72,6 @@ class TaggingDao():
         :return:
         """
         pass
-
 
 
 class EvaluationDao(object):
