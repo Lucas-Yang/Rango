@@ -1,25 +1,18 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
-import asyncio
-import json
 import uuid
-from fastapi import APIRouter
-from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.security import OAuth2PasswordBearer
-from app.common.db import MyMongoClient
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskUpdate
-import app.bin.task as task
 import io
+
+import app.bin.task as task
+
+from fastapi import APIRouter, UploadFile, File, Depends
+from app.common.db import MyMongoClient
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate
 from app.bin.dao import TaggingDao
-
-video_app = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='user/register')
-db = MyMongoClient()
-
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
+db = MyMongoClient()
 
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
@@ -68,7 +61,6 @@ async def mos_video_task_status_by_user(user: str, page_num: int, page_size: int
 
     res = TaggingDao().query_tagging_task_by_user(user=user, skip=page_num, limit_num=page_size)
     return BinModelReturn(code=0, msg="success", data={"task_info": res})
-
 
 
 @video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
