@@ -43,7 +43,6 @@ class MySQLClient(object):
                                   )
 
     def __new__(cls):
-        # 关键在于这，每一次实例化的时候，我们都只会返回这同一个instance对象
         if not hasattr(cls, 'instance'):
             cls.instance = super(MySQLClient, cls).__new__(cls)
         return cls.instance
@@ -185,5 +184,8 @@ class RedisClient(object):
 
 if __name__ == "__main__":
     mysql_handler_1 = MySQLClient()
+    mysql_handler_1.close_db()
+    print(mysql_handler_1.db.ping())
+    print(mysql_handler_1.db)
     mysql_handler_2 = MySQLClient()
     print(mysql_handler_1 is mysql_handler_2)
