@@ -20,6 +20,7 @@ class UserRegisterItem(BaseModel):
     """
     email: str
     password: str
+    vcode: str
 
 
 class UserUpdateItem(BaseModel):
