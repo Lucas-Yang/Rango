@@ -13,8 +13,8 @@ MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3
 MONGO_DB = 'burytest'
 
 MYSQL_HOST = "127.0.0.1"
-MYSQL_USERNAME = "test1"
-MYSQL_PASSWORD = "test1"
+MYSQL_USERNAME = "root"
+MYSQL_PASSWORD = "Jz19980429#"
 MYSQL_DATABASE = "rango"
 MYSQL_PORT = 3306
 
