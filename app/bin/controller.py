@@ -14,6 +14,8 @@ from app.user import oauth2_scheme
 video_app = APIRouter()
 db = MyMongoClient()
 
+# ################# 标注任务接口 ##################
+
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
 async def mos_video_task_create(item: TaggingTaskCreate):
