@@ -1,6 +1,4 @@
-# from app.bin.model import TaggingTaskUpate
 import app.bin.model as model
-import app.bin.dao as sql
 from app.common.db import MyMongoClient
 import time
 
@@ -11,7 +9,7 @@ import time
 db = MyMongoClient().db
 
 
-class TaggingDao():
+class TaggingDao(object):
     """
 
     数据标准层数据接口
@@ -101,7 +99,6 @@ class TaggingDao():
         score_summary_col = db['rango_tagging_score_summary']
         score_summary_col.insert_one({'task_id': task_id, 'scores': res_score})
         return res_score
-
 
 class EvaluationDao(object):
     """ 自动评估层数据接口

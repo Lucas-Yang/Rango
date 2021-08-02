@@ -1,25 +1,20 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
-import asyncio
-import json
 import uuid
-from fastapi import APIRouter
-from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.security import OAuth2PasswordBearer
-from app.common.db import MyMongoClient
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskUpdate
-import app.bin.task as task
 import io
+from fastapi import APIRouter, UploadFile, File, Depends
+
+from app.common.db import MyMongoClient
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate
 from app.bin.dao import TaggingDao
+import app.bin.tasks.tagging_task as task
 
-video_app = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='user/register')
-db = MyMongoClient()
-
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
+db = MyMongoClient()
+
+# ################# 标注任务接口 ##################
 
 
 @video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
@@ -159,6 +154,8 @@ async def evaluate_video_task_delete():
     :return:
     """
     pass
+
+# ################# 文件上传 ##################
 
 
 @video_app.post('/task-file/upload', response_model=BinModelReturn, summary="单个文件上传到boss接口")

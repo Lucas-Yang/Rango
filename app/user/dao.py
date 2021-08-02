@@ -3,19 +3,24 @@
 from fastapi import HTTPException, status
 from functools import singledispatch
 
-from app.common.db import MySQLClient
+from app.common.db import MySQLClient, RedisClient
 from app.user.utils.jwt import UserJwt
+
+# 用于加密数据
+import hashlib
 
 
 class UserDao(object):
     """
     """
+
     def __init__(self, item: dict = None):
         """
         """
         self.item = item
         self.__mysql_handler = MySQLClient()
         self.__jwt_handler = UserJwt(self.item)
+        self.__redis_handle = RedisClient()
 
     def user_register(self):
         """
@@ -23,6 +28,12 @@ class UserDao(object):
         """
         try:
             user_status, user_info = self.user_status()
+            # 密码sha256加密
+            password_sha = hashlib.sha256(self.item.get("password").encode('utf-8')).hexdigest()
+
+            v_code = self.__redis_handle.get_data(self.item.get("email", ""))
+            if v_code is None or self.item.get("vcode") != v_code:
+                return False, "verification code wrong or expired"
             if not user_status:
                 if self.item.get("email", "").endswith("bilibili.com"):
                     user_role = "'master'"
@@ -30,7 +41,7 @@ class UserDao(object):
                     user_role = "'common'"
                 sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ({}, {}, {}, 1)". \
                     format('\'' + self.item.get("email") + '\'', '\'' +
-                           self.item.get("password") + '\'',
+                           password_sha + '\'',
                            user_role
                            )
                 self.__mysql_handler.insert_db(sql)
@@ -87,7 +98,8 @@ class UserDao(object):
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
             if data:
-                if data[0][3] == self.item.get("password"):
+                password_sha = hashlib.sha256(self.item.get("password").encode('utf-8')).hexdigest()
+                if data[0][3] == password_sha:
                     return True, {"email": data[0][0], "role": data[0][1], "status": data[0][2]}
                 else:
                     return False, "密码错误"

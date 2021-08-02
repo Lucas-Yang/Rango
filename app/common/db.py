@@ -4,27 +4,24 @@
 import pymysql
 import time
 import redis
+import uuid
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
 import aioredis
 from pymongo import MongoClient
-import app.common.config as config
-MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
-            '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
-            '0Compass&ssl=false'
-MONGO_DB = 'burytest'
-
-MYSQL_HOST = "127.0.0.1"
-MYSQL_USERNAME = "test1"
-MYSQL_PASSWORD = "test1"
-MYSQL_DATABASE = "rango"
-MYSQL_PORT = 3306
+import config.testconfig as config
 
 
 class MySQLClient(object):
     """mysql 操作类
     """
 
-    def __init__(self, host=MYSQL_HOST, username=MYSQL_USERNAME, password=MYSQL_PASSWORD,
-                 database=MYSQL_DATABASE, port=MYSQL_PORT):
+    def __init__(self, host=config.mysql_config.get("host"),
+                 username=config.mysql_config.get("username"),
+                 password=config.mysql_config.get("password"),
+                 database=config.mysql_config.get("database"),
+                 port=config.mysql_config.get("port")):
         """init
         :param host:
         :param username:
@@ -122,11 +119,12 @@ class MySQLClient(object):
 class MyMongoClient(object):
     """mongo 操作类
     """
+
     def __init__(self):
-        self.Mongo_client = MongoClient(config.mongodb_uri, replicaSet="bapi")
+        self.Mongo_client = MongoClient(config.mongo_config.get('mongodb_uri'), replicaSet="bapi")
         self.db = self.Mongo_client.mobileautotest
-        self.db.authenticate(name=config.mongodb_user,
-                                         password=config.mongodb_password)
+        self.db.authenticate(name=config.mongo_config.get('mongodb_user'),
+                             password=config.mongo_config.get('mongodb_password'))
         self.db_initial_time = time.strftime("%Y-%m-%d %H:%M:%S")
 
     # def db(self):
@@ -158,7 +156,8 @@ class MyMongoClient(object):
 class RedisClient(object):
     """ redis 操作封装类
     """
-    def __init__(self, host='localhost', port=6379, decode_responses=True):
+    def __init__(self, host=config.redis_config.get('host'),
+                 port=config.redis_config.get('port'), decode_responses=True):
         """
         """
         self.__pool = redis.ConnectionPool(host=host, port=port, decode_responses=True)
@@ -172,7 +171,8 @@ class RedisClient(object):
     def get_data(self, key):
         """
         """
-        self.__redis_cli.get(key)
+        value = self.__redis_cli.get(key)
+        return value
 
     def delete_data(self, key):
         """
@@ -181,6 +181,48 @@ class RedisClient(object):
     def update_data(self, key):
         """
         """
+
+    def create_verification_code(self, email):
+        temp = uuid.uuid4()
+        v_code = str(temp).replace('-', '')[:6]
+
+        # 存储数据库
+        self.__redis_cli.set(email, v_code, ex=120)
+
+        # 发送邮件
+        sender = config.email_config.get('sender')
+        password = config.email_config.get('password')
+
+        # 发信服务器
+        smtp_server = config.email_config.get('smtp_server')
+        receiver = email
+        body = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html";charset="utf-8">
+        <title>verification code email</title>
+        </head>
+        <body>
+        <p>本次注册的验证码:</p>
+        <p><h1>{}</h1></p>
+        </body>
+        </html>
+        """
+        message = MIMEText(body.format(v_code), 'html', 'utf-8')
+        message['From'] = Header(sender)
+        message['To'] = Header(receiver)
+        message['Subject'] = Header('rango 注册验证码', 'utf-8')
+
+        try:
+            server = smtplib.SMTP_SSL(smtp_server)
+            server.connect(smtp_server, 465)
+            server.login(sender, password)
+            server.sendmail(sender, receiver, message.as_string())
+            server.close()
+            return True, "验证码发送成功"
+        except smtplib.SMTPException:
+            return False, "邮件发送失败"
 
 
 if __name__ == "__main__":

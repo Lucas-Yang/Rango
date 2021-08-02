@@ -1,15 +1,15 @@
+import json
+
 from datetime import datetime, timezone
 from typing import Optional, List, ByteString
 from pydantic import BaseModel, Field, BaseConfig
-import json
-
-
 from enum import Enum, unique
 
 from app.common.data import ReturnCode
 
 """ 数据结构定义, 只存放数据
 """
+
 
 @unique
 class TagTypes(Enum):
