@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 import uuid
 import io
-
-import app.bin.task as task
-
 from fastapi import APIRouter, UploadFile, File, Depends
+
 from app.common.db import MyMongoClient
 from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate
 from app.bin.dao import TaggingDao
+import app.bin.tasks.tagging_task as task
+
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
