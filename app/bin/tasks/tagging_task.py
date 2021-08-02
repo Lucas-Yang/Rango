@@ -1,22 +1,21 @@
-from celery import Celery
-import app.common.config as config
-from app.common.boss import Boss
-from app.common.db import MyMongoClient
-import uuid, time
-import logging
-import collections
+"""
+异步任务队列， 主要处理耗时非紧急任务
+"""
 import itertools
+import logging
+import time
+import uuid
 from operator import itemgetter
 
-app = Celery('task',
-             backend=config.backend,
-             broker=config.broker)
+from app.common.boss import Boss
+from app.common.db import MyMongoClient
+from app.bin.tasks import celery_app as app
 
 db = MyMongoClient().db
 
 
 @app.task()
-def upload_data(obj, task_id,group_id,video_index,file_name):
+def upload_data(obj, task_id, group_id, video_index, file_name):
     collection = db['rango_task_files']
     fid = f'{uuid.uuid4()}'
     logging.info(fid)
@@ -27,7 +26,7 @@ def upload_data(obj, task_id,group_id,video_index,file_name):
     collection.insert_one(insert_data)
     # upload
     boss = Boss()
-    boss_url = boss.upload_data(obj,file_name)
+    boss_url = boss.upload_data(obj, file_name)
     logging.info(boss_url)
     # update mongo
     select = {'fid': fid}
@@ -64,8 +63,8 @@ def create_tagging_task(task_id, job_name, user, job_type, questionnaire_num, ex
 
     insert_data = {
         "created_at": time.strftime("%Y-%m-%d %H:%M:%S"), "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "task_id": task_id, "job_name": job_name, "job_type": job_type, "groups": groups,"user":user,
-        "questionnaire_num": questionnaire_num, "expire_data": expire_date,"status":0
+        "task_id": task_id, "job_name": job_name, "job_type": job_type, "groups": groups, "user": user,
+        "questionnaire_num": questionnaire_num, "expire_data": expire_date, "status": 0
     }
     print(insert_data)
     collection.insert_one(insert_data)
