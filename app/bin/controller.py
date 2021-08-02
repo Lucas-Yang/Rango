@@ -70,7 +70,6 @@ async def mos_video_task_status_by_user(user: str, page_num: int, page_size: int
     return BinModelReturn(code=0, msg="success", data={"task_info": res})
 
 
-
 @video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
 async def mos_video_task_delete(task_id: str):
     """ 标注任务删除
@@ -83,9 +82,32 @@ async def mos_video_task_delete(task_id: str):
 @video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="评估任务打分回收")
 async def moss_video_task_score(item: TaggingTaskScore):
     """
+    插入标注视频分数
     :return:
     """
-    print(item)
+    res = TaggingDao().collect_video_task_score(dict(item))
+    print(res.inserted_id)
+    return BinModelReturn(code=0, msg="success", data={"insert_info": dict(item)})
+
+
+@video_app.post('/tagging/task/computed/score', response_model=BinModelReturn, summary="计算评估任务打分")
+async def moss_video_computed_task_score(task_id: str):
+    """
+    插入标注视频分数
+    :return:
+    """
+    res = TaggingDao().computed_video_task_scores(task_id)
+    return BinModelReturn(code=0, msg="success", data={"insert_info": res})
+
+
+@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="查询打分")
+async def moss_video_query_task_score(task_id: str):
+    """
+    插入标注视频分数
+    :return:
+    """
+    res = TaggingDao().video_query_task_score(task_id)
+    return BinModelReturn(code=0, msg="success", data={"data": res})
 
 
 # ############## 自动评估接口 ###############

@@ -99,7 +99,9 @@ class TaggingTaskScore(BaseModel):
     """ 标注任务模块 - 打分回收接口
     """
     task_id: str
-    group_result: List[TaggingTaskGroupScore]
+    group_id: int
+    scores: List[int]
+    user:str
 
 # ########################## evaluation 模块数据定义 ###########################
 
