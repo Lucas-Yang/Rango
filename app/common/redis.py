@@ -15,6 +15,7 @@ password = 'mvejgvmefnerbhjb'
 # 发信服务器
 smtp_server = 'smtp.qq.com'
 
+
 class RedisClient:
     """
     Redis 操作类
