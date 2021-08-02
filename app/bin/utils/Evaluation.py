@@ -38,7 +38,7 @@ class FRVideoEvaluationFactory(object):
 class NRVideoEvaluationFactory(object):
     """ 无参考视频质量评估
     """
-    def __init__(self, src_video_url: str, target_video_url: str=None):
+    def __init__(self, src_video_url: str):
         """
         """
         self.__video_url = src_video_url
