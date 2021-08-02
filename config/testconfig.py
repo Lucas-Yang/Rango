@@ -31,11 +31,13 @@ email_config = {
 # celery
 # celery 任务队列, mongodb 作为backend方便持久化存储
 
+
 class CeleryConfig:
-    broker = 'redis://172.22.119.29:6381/4'
-    backend = 'redis://172.22.119.29:6381/5'
+    broker_url = 'redis://0.0.0.0:6379/3'
+    backend = 'redis://0.0.0.0:6379/4'
     task_track_started = True
     enable_utc = True
+    timezone = 'Asia/Shanghai'
     """
     broker_url = 'redis://0.0.0.0:6379/3'
     task_track_started = True
