@@ -8,7 +8,7 @@ from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, User
 from app.common.factory import FormatCheck
 from app.user.dao import UserDao
 from app.user import oauth2_scheme
-from app.common.redis import RedisClient
+from app.common.db import RedisClient
 
 user_app = APIRouter()
 format_handler = FormatCheck()

@@ -3,9 +3,8 @@
 from fastapi import HTTPException, status
 from functools import singledispatch
 
-from app.common.db import MySQLClient
+from app.common.db import MySQLClient, RedisClient
 from app.user.utils.jwt import UserJwt
-from app.common.redis import RedisClient
 
 # 用于加密数据
 import hashlib
@@ -32,8 +31,8 @@ class UserDao(object):
             # 密码sha256加密
             password_sha = hashlib.sha256(self.item.get("password").encode('utf-8')).hexdigest()
 
-            v_code = self.__redis_handle.get_verification_code(self.item.get("email", ""))
-            if v_code is None or self.item.get("vcode") != bytes.decode(v_code):
+            v_code = self.__redis_handle.get_data(self.item.get("email", ""))
+            if v_code is None or self.item.get("vcode") != v_code:
                 return False, "verification code wrong or expired"
             if not user_status:
                 if self.item.get("email", "").endswith("bilibili.com"):
