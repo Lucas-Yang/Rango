@@ -10,32 +10,18 @@ from email.mime.text import MIMEText
 from email.header import Header
 import aioredis
 from pymongo import MongoClient
-import app.common.config as config
-
-MONGO_URL = 'mongodb://burytest:GbnO35lpzAyjkPqSXQTiHwLuDs2r4gcR@172.22.34.102:3301/test' \
-            '?authSource=burytest&replicaSet=bapi&readPreference=primary&appname=MongoDB%2' \
-            '0Compass&ssl=false'
-MONGO_DB = 'burytest'
-
-MYSQL_HOST = "127.0.0.1"
-MYSQL_USERNAME = "root"
-MYSQL_PASSWORD = "Jz19980429#"
-MYSQL_DATABASE = "rango"
-MYSQL_PORT = 3306
-
-sender = '396937118@qq.com'
-password = 'mvejgvmefnerbhjb'
-
-# 发信服务器
-smtp_server = 'smtp.qq.com'
+import config.testconfig as config
 
 
 class MySQLClient(object):
     """mysql 操作类
     """
 
-    def __init__(self, host=MYSQL_HOST, username=MYSQL_USERNAME, password=MYSQL_PASSWORD,
-                 database=MYSQL_DATABASE, port=MYSQL_PORT):
+    def __init__(self, host=config.mysql_config.get("host"),
+                 username=config.mysql_config.get("username"),
+                 password=config.mysql_config.get("password"),
+                 database=config.mysql_config.get("database"),
+                 port=config.mysql_config.get("port")):
         """init
         :param host:
         :param username:
@@ -135,10 +121,10 @@ class MyMongoClient(object):
     """
 
     def __init__(self):
-        self.Mongo_client = MongoClient(config.mongodb_uri, replicaSet="bapi")
+        self.Mongo_client = MongoClient(config.mongo_config.get('mongodb_uri'), replicaSet="bapi")
         self.db = self.Mongo_client.mobileautotest
-        self.db.authenticate(name=config.mongodb_user,
-                             password=config.mongodb_password)
+        self.db.authenticate(name=config.mongo_config.get('mongodb_user'),
+                             password=config.mongo_config.get('mongodb_password'))
         self.db_initial_time = time.strftime("%Y-%m-%d %H:%M:%S")
 
     # def db(self):
@@ -170,7 +156,8 @@ class MyMongoClient(object):
 class RedisClient(object):
     """ redis 操作封装类
     """
-    def __init__(self, host='localhost', port=6379, decode_responses=True):
+    def __init__(self, host=config.redis_config.get('host'),
+                 port=config.redis_config.get('port'), decode_responses=True):
         """
         """
         self.__pool = redis.ConnectionPool(host=host, port=port, decode_responses=True)
@@ -203,6 +190,11 @@ class RedisClient(object):
         self.__redis_cli.set(email, v_code, ex=120)
 
         # 发送邮件
+        sender = config.email_config.get('sender')
+        password = config.email_config.get('password')
+
+        # 发信服务器
+        smtp_server = config.email_config.get('smtp_server')
         receiver = email
         body = """
         <!DOCTYPE html>

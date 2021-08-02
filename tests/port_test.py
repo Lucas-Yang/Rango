@@ -23,6 +23,7 @@ class TestProject(object):
         response = requests.get(url=url, params=data_json)
         assert response.status_code == 200
         assert response.json()['code'] == 0
+        assert response.json()['msg'] == 'success'
 
     def test_user_login(self):
         url = "http://localhost:8000/user/login"

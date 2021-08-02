@@ -1,14 +1,14 @@
 # mysql
-test_mysql_config = {
+mysql_config = {
     "host": "127.0.0.1",
-    "username": "test1",
-    "password": "test1",
+    "username": "root",
+    "password": "Jz19980429#",
     "database": "rango",
     "port": 3306
 }
 
 # mongo
-test_mongo_config = {
+mongo_config = {
     "mongodb_user": "mobileautotest",
     "mongodb_password": "baYeDMOQB1vNE3losdFLfVg5Rr7ACZph",
     "mongodb_uri": "mongodb://172.22.34.101:3301,172.22.34.102:3301"
