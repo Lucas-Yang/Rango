@@ -2,7 +2,7 @@ import re
 
 from jsonschema import validate
 
-from app.common.logger import LogManager
+from app.common import logger
 
 
 class FormatCheck(object):
@@ -11,7 +11,7 @@ class FormatCheck(object):
     """
 
     def __init__(self):
-        self.__loger = LogManager().logger
+        self.__logger = logger
 
     def user_register_check(self, register_item):
         """ 用户管理 - 注册校验
