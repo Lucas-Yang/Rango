@@ -1,6 +1,7 @@
 import app.bin.model as model
 from app.common.db import MyMongoClient
 import time
+
 # from app.bin.utils.Evaluation import FRVideoEvaluationFactory
 # from app.bin.utils.Evaluation import NRVideoEvaluationFactory
 """ 为接口生产数据
@@ -23,6 +24,11 @@ class TaggingDao(object):
         return res
 
     def query_tagging_task_by_user(self, user, skip, limit_num):
+        """ 获取所有的待标注任务
+        todo  添加status
+        :param:
+        :return:
+        """
         task_col = db['rango_evaluate_tasks']
         if user == 'all':
             user = {'$regex': '.*'}
@@ -59,20 +65,40 @@ class TaggingDao(object):
         res = file_col.delete_one({'fid': fid})
         return res.deleted_count
 
-    def get_task_status(self, tagging_task_status_dict: dict):
-        """ 获取所有的待标注任务
-        :param tagging_task_status_dict:
-        :return:
-        """
-        pass
+    def collect_video_task_score(self, score_info: dict):
+        score_col = db['rango_tagging_score']
+        res = score_col.insert_one(score_info)
+        return res
 
-    def get_personal_task_status(self, personal_task_dict: dict):
-        """ 获取个人的创建的task
-        :param personal_task_dict:
-        :return:
-        """
-        pass
+    def video_query_task_score(self, task_id: str):
+        score_col = db['rango_tagging_score_summary']
+        res = score_col.find_one({'task_id': task_id}, {'scores': 1, '_id': 0})
+        return res
 
+    def computed_video_task_scores(self, task_id):
+        score_col = db['rango_tagging_score']
+        task_infos = list(score_col.find({'task_id': task_id}, {'_id': 0}))
+        print(task_infos)
+        group_list = set()
+        res_score = []
+        for i in task_infos:
+            group_list.add(i['group_id'])
+        length = len(group_list)
+        for i in range(1, length + 1):
+            print(i)
+            s = [x['scores'] for x in task_infos if x['group_id'] == i]
+            len_people = len(s)
+            len_videos = len(task_infos[0]['scores'])
+            print(s, len_people)
+            res = [0 for i in range(len_videos)]
+            for i in range(len_videos):
+                for n in range(len_people):
+                    res[i] += s[n][i]
+            res = [round(x / len_people, 2) for x in res]
+            res_score.append(res)
+        score_summary_col = db['rango_tagging_score_summary']
+        score_summary_col.insert_one({'task_id': task_id, 'scores': res_score})
+        return res_score
 
 class EvaluationDao(object):
     """ 自动评估层数据接口

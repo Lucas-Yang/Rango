@@ -8,6 +8,7 @@ from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, User
 from app.common.factory import FormatCheck
 from app.user.dao import UserDao
 from app.user import oauth2_scheme
+from app.common.db import RedisClient
 
 user_app = APIRouter()
 format_handler = FormatCheck()
@@ -107,6 +108,19 @@ async def user_login(token: str = Depends(oauth2_scheme)):
     """
     user_handler = UserDao()
     return user_handler.user_auth(token)
+
+
+@user_app.get('/verify/code', summary="获取验证玛")
+async def get_verify_code(email):
+    """
+    :return
+    """
+    redis_handle = RedisClient()
+    status, msg = redis_handle.create_verification_code(email)
+    if status:
+        return UserModelReturn(code=0, msg="success", data={"info": msg})
+    else:
+        return UserModelReturn(code=2, msg="internal error", data={"info": msg})
 
 
 @user_app.get('/ping', summary="test")
