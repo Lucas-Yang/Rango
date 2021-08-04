@@ -5,8 +5,8 @@ from app.bin.utils.Evaluation import FRVideoEvaluationFactory, NRVideoEvaluation
 @celery_app.task
 def evaluation_task(task_info_dict: dict):
     """ 评估任务 worker
-    :param task_info_dict: {"task_id": xx, task_name: xx, task_type: xx,
-                             task_detail:{"index": [psnr, ssim], "index_type": "FR/NR"},
+    :param task_info_dict: {"task_id": xx, "task_name": xx, "task_type": xx,
+                             "task_detail":{"index": [psnr, ssim], "index_type": "FR/NR"},
                             "groups": {"1": [xxx.mp4, xxx.mp4], "2": []},
                             "user": xxx
                             }
@@ -26,14 +26,23 @@ def evaluation_task(task_info_dict: dict):
                 elif index_name == "ssim":
                     ssim_res = FRVideoHandler.get_video_ssim()
                 elif index_name == "vamf":
-                    vamf_res = FRVideoHandler.get_video_vmaf()
+                    vmaf_res = FRVideoHandler.get_video_vmaf()
                 else:
                     continue
+        # write data to db
+
     elif index_type == "NR":
         for group_id, video_url_list in enumerate(task_info_dict.get("groups")):
             NRVideoHandler = NRVideoEvaluationFactory(src_video_url=video_url_list[0])
             for index_name in index_list:
-                pass
+                if index_name == "clarity":
+                    NRVideoHandler.get_video_clarity()
+                elif index_name == "NIQE":
+                    NRVideoHandler.get_video_NIQE()
+                else:
+                    continue
+        # write data to db
+
     else:
         pass
 

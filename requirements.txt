@@ -14,3 +14,5 @@ fastapi
 Celery
 boto3
 python-multipart
+opencv-python==4.4.0.40
+requests
