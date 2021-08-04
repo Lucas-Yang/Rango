@@ -101,7 +101,8 @@ class TaggingTaskScore(BaseModel):
     task_id: str
     group_id: int
     scores: List[int]
-    user:str
+    user: str
+
 
 class UserTaskStatus(BaseModel):
     """ 用户完成任务状态
@@ -111,6 +112,24 @@ class UserTaskStatus(BaseModel):
     user:str
 
 # ########################## evaluation 模块数据定义 ###########################
+
+
+@unique
+class VideoEvaluationFRIndex(Enum):
+    """ 视频全参考指标
+    """
+    SSIM = 0
+    PSNR = 1
+    VMAF = 2
+
+
+@unique
+class VideoEvaluationNRIndex(Enum):
+    """ 视频无参考指标
+    """
+    FREEZE = 0
+    DEFINITION = 1
+    NIQE = 2
 
 
 
