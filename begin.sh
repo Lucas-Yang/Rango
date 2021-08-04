@@ -1,1 +1,1 @@
-python main.py
+python /data/app/rango/main.py
