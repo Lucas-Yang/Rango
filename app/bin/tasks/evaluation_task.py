@@ -1,3 +1,7 @@
+"""
+tagging异步任务
+"""
+
 from app.bin.tasks import celery_app
 from app.bin.utils.Evaluation import FRVideoEvaluationFactory, NRVideoEvaluationFactory
 
