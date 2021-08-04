@@ -128,5 +128,4 @@ async def test():
     """
     :return:
     """
-    await asyncio.sleep(10)
     return {"code": 0, "msg": "hello Rango"}

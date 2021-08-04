@@ -21,11 +21,11 @@ def evaluation_task(task_info_dict: dict):
                                                       target_video_url=video_url_list[1]
                                                       )
             for index_name in index_list:
-                if index_name == "psnr":
+                if index_name == "PSNR":
                     psnr_res = FRVideoHandler.get_video_psnr()
-                elif index_name == "ssim":
+                elif index_name == "SSIM":
                     ssim_res = FRVideoHandler.get_video_ssim()
-                elif index_name == "vamf":
+                elif index_name == "VMAF":
                     vmaf_res = FRVideoHandler.get_video_vmaf()
                 else:
                     continue
@@ -35,7 +35,7 @@ def evaluation_task(task_info_dict: dict):
         for group_id, video_url_list in enumerate(task_info_dict.get("groups")):
             NRVideoHandler = NRVideoEvaluationFactory(src_video_url=video_url_list[0])
             for index_name in index_list:
-                if index_name == "clarity":
+                if index_name == "DEFINITION":
                     NRVideoHandler.get_video_clarity()
                 elif index_name == "NIQE":
                     NRVideoHandler.get_video_NIQE()
