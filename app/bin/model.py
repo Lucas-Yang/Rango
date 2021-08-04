@@ -125,5 +125,13 @@ class VideoEvaluationNRIndex(Enum):
     NIQE = 2
 
 
+class EvaluationTaskCreate(TaggingTaskCreate):
+    """ 标注任务模块- 创建任务
+    """
+    job_details: Optional[dict]
+
+
+
+
 
 

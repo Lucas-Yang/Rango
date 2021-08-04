@@ -4,15 +4,16 @@ import uuid
 import io
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from app.common.db import MyMongoClient
-from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate
+from app.bin.model import BinModelReturn, TaggingTaskCreate, \
+    TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate, \
+    EvaluationTaskCreate
 from app.bin.dao import TaggingDao
-import app.bin.tasks.tagging_task as task
+import app.bin.tasks.common_task as task
 
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
-db = MyMongoClient()
+
 
 # ################# 标注任务接口 ##################
 
@@ -22,8 +23,8 @@ async def mos_video_task_create(item: TaggingTaskCreate):
     """ 创建标注任务接口
     :return:
     """
-    task.create_tagging_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
-                             item.expire_data)
+    task.create_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
+                     item.expire_data)
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
@@ -109,11 +110,13 @@ async def moss_video_query_task_score(task_id: str):
 
 
 @video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建")
-async def evaluate_video_task_create():
+async def evaluate_video_task_create(item: EvaluationTaskCreate):
     """ 评估任务创建
     :return:
     """
-    pass
+    task.create_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
+                     item.expire_data, job_detail=item.job_details)
+    return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
 @video_app.put('/evaluation/task', response_model=BinModelReturn, summary="评估任务修改")
@@ -154,6 +157,7 @@ async def evaluate_video_task_delete():
     :return:
     """
     pass
+
 
 # ################# 文件上传 ##################
 
