@@ -104,6 +104,13 @@ class TaggingTaskScore(BaseModel):
     user: str
 
 
+class UserTaskStatus(BaseModel):
+    """ 用户完成任务状态
+    """
+    task_id: str
+    status:str
+    user:str
+
 # ########################## evaluation 模块数据定义 ###########################
 
 

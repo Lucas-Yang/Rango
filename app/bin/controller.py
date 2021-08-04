@@ -6,7 +6,8 @@ from fastapi import APIRouter, UploadFile, File, Depends
 
 from app.bin.model import BinModelReturn, TaggingTaskCreate, \
     TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate, \
-    EvaluationTaskCreate
+    EvaluationTaskCreate, UserTaskStatus
+
 from app.bin.dao import TaggingDao
 import app.bin.tasks.common_task as task
 
@@ -82,8 +83,19 @@ async def moss_video_task_score(item: TaggingTaskScore):
     :return:
     """
     res = TaggingDao().collect_video_task_score(dict(item))
+
     print(res.inserted_id)
     return BinModelReturn(code=0, msg="success", data={"insert_info": dict(item)})
+
+
+@video_app.post('/tagging/task/record/user', response_model=BinModelReturn, summary="计算评估任务打分")
+async def moss_video_record_task_user(item: UserTaskStatus):
+    """
+    记录用户完成的task
+    :return:
+    """
+    TaggingDao().record_tagging_task_user(dict(item))
+    return BinModelReturn(code=0, msg="success", data={"insert_info": item.user})
 
 
 @video_app.post('/tagging/task/computed/score', response_model=BinModelReturn, summary="计算评估任务打分")
@@ -93,6 +105,7 @@ async def moss_video_computed_task_score(task_id: str):
     :return:
     """
     res = TaggingDao().computed_video_task_scores(task_id)
+
     return BinModelReturn(code=0, msg="success", data={"insert_info": res})
 
 
@@ -103,6 +116,16 @@ async def moss_video_query_task_score(task_id: str):
     :return:
     """
     res = TaggingDao().video_query_task_score(task_id)
+    return BinModelReturn(code=0, msg="success", data={"data": res})
+
+
+@video_app.get('/user/tagging-tasks', response_model=BinModelReturn, summary="用户已标记的任务")
+async def moss_video_query_user_task(user: str, page_num: int, page_size: int):
+    """
+    查询对应用户已标注的task
+    :return:
+    """
+    res = TaggingDao().video_query_user_task(user, page_num, page_size)
     return BinModelReturn(code=0, msg="success", data={"data": res})
 
 
