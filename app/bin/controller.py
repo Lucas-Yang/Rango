@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 import uuid
 import io
+import app.bin.tasks.common_task as task
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from app.bin.model import BinModelReturn, TaggingTaskCreate, \
-    TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate, \
-    EvaluationTaskCreate, UserTaskStatus
-from app.bin.dao import TaggingDao
-import app.bin.tasks.common_task as task
+from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, \
+    TaggingTaskScore, TaggingTaskUpdate, EvaluationTaskCreate, UserTaskStatus
 
+from app.bin.dao import TaggingDao
+from app.bin.tasks import celery_app
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
@@ -136,6 +136,8 @@ async def evaluate_video_task_create(item: EvaluationTaskCreate):
     """ 评估任务创建
     :return:
     """
+    r = celery_app.delay(item.dict())
+    task_id = r.task_id
     task.create_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
                      item.expire_data, job_detail=item.job_details)
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
