@@ -7,5 +7,5 @@
 ### 功能描述
 - first deploy
 
-### 镜像包地址
-- hub.bilibili.co/luoyadong/mock-fuzz-service:3.2
+### 发布commit_id
+- xxxx
