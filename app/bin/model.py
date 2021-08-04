@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Optional, List, ByteString
 from pydantic import BaseModel, Field, BaseConfig
 from enum import Enum, unique
+from fastapi import UploadFile, File
 
 from app.common.data import ReturnCode
 
@@ -25,6 +26,7 @@ class BinModelReturn(BaseModel):
     code: ReturnCode
     msg: str
     data: Optional[dict]
+
 
 # ########################## tag 模块数据定义 ###########################
 
@@ -56,6 +58,7 @@ class DateEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
         else:
             return json.JSONEncoder.default(self, obj)
+
 
 # class JobInfo(BaseModel):
 #     """
@@ -108,8 +111,8 @@ class UserTaskStatus(BaseModel):
     """ 用户完成任务状态
     """
     task_id: str
-    status:str
-    user:str
+    status: str
+    user: str
 
 # ########################## evaluation 模块数据定义 ###########################
 

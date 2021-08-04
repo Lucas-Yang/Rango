@@ -7,7 +7,6 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from app.bin.model import BinModelReturn, TaggingTaskCreate, \
     TaggingTaskStatus, TaggingTaskScore, TaggingTaskUpdate, \
     EvaluationTaskCreate, UserTaskStatus
-
 from app.bin.dao import TaggingDao
 import app.bin.tasks.common_task as task
 
@@ -38,7 +37,7 @@ async def mos_video_task_update(item: TaggingTaskUpdate):
     return BinModelReturn(code=0, msg="success", data={"modify_num": res})
 
 
-@video_app.get('/get-task-id/')
+@video_app.get('/get-task-id')
 async def get_task_task_id():
     session_id = f'{uuid.uuid4()}'
     """ 获取本次任务id
@@ -58,13 +57,13 @@ async def mos_video_task_status(task_id: str):
 
 
 @video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询")
-async def mos_video_task_status_by_user(user: str, page_num: int, page_size: int):
+async def mos_video_task_status_by_user(user: str, page_num: int = 1, page_size: int = 10):
     """ 标注任务查询
     :return:
     """
 
-    res = TaggingDao().query_tagging_task_by_user(user=user, skip=page_num, limit_num=page_size)
-    return BinModelReturn(code=0, msg="success", data={"task_info": res})
+    res, count = TaggingDao().query_tagging_task_by_user(user=user, skip=page_num, limit_num=page_size)
+    return BinModelReturn(code=0, msg="success", data={"task_info": res, "count": count})
 
 
 @video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
@@ -116,17 +115,17 @@ async def moss_video_query_task_score(task_id: str):
     :return:
     """
     res = TaggingDao().video_query_task_score(task_id)
-    return BinModelReturn(code=0, msg="success", data={"data": res})
+    return BinModelReturn(code=0, msg="success", data=res)
 
 
 @video_app.get('/user/tagging-tasks', response_model=BinModelReturn, summary="用户已标记的任务")
-async def moss_video_query_user_task(user: str, page_num: int, page_size: int):
+async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: int = 10):
     """
     查询对应用户已标注的task
     :return:
     """
-    res = TaggingDao().video_query_user_task(user, page_num, page_size)
-    return BinModelReturn(code=0, msg="success", data={"data": res})
+    res, count = TaggingDao().video_query_user_task(user, page_num, page_size)
+    return BinModelReturn(code=0, msg="success", data={"data": res, "count": count})
 
 
 # ############## 自动评估接口 ###############
