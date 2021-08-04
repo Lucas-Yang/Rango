@@ -75,7 +75,7 @@ async def mos_video_task_delete(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
-@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="评估任务打分回收")
+@video_app.post('/tagging/group/score', response_model=BinModelReturn, summary="评估任务打分回收")
 async def moss_video_task_score(item: TaggingTaskScore):
     """
     插入标注视频分数
@@ -87,7 +87,7 @@ async def moss_video_task_score(item: TaggingTaskScore):
     return BinModelReturn(code=0, msg="success", data={"insert_info": dict(item)})
 
 
-@video_app.post('/tagging/task/record/user', response_model=BinModelReturn, summary="计算评估任务打分")
+@video_app.post('/tagging/task/user', response_model=BinModelReturn, summary="记录用户完成的task")
 async def moss_video_record_task_user(item: UserTaskStatus):
     """
     记录用户完成的task
@@ -97,7 +97,7 @@ async def moss_video_record_task_user(item: UserTaskStatus):
     return BinModelReturn(code=0, msg="success", data={"insert_info": item.user})
 
 
-@video_app.post('/tagging/task/computed/score', response_model=BinModelReturn, summary="计算评估任务打分")
+@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="计算标注任务打分")
 async def moss_video_computed_task_score(task_id: str):
     """
     插入标注视频分数
@@ -108,17 +108,17 @@ async def moss_video_computed_task_score(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"insert_info": res})
 
 
-@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="查询打分")
-async def moss_video_query_task_score(task_id: str):
-    """
-    插入标注视频分数
-    :return:
-    """
-    res = TaggingDao().video_query_task_score(task_id)
-    return BinModelReturn(code=0, msg="success", data=res)
+# @video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="查询打分")
+# async def moss_video_query_task_score(task_id: str):
+#     """
+#     插入标注视频分数
+#     :return:
+#     """
+#     res = TaggingDao().video_query_task_score(task_id)
+#     return BinModelReturn(code=0, msg="success", data=res)
 
 
-@video_app.get('/user/tagging-tasks', response_model=BinModelReturn, summary="用户已标记的任务")
+@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务")
 async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: int = 10):
     """
     查询对应用户已标注的task
