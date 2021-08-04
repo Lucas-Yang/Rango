@@ -70,6 +70,23 @@ class TaggingDao(object):
         res = score_col.insert_one(score_info)
         return res
 
+
+    def record_tagging_task_user(self, tasks_info: dict):
+        score_col = db['rango_tagging_users']
+        select = {'task_id': tasks_info['task_id'], 'user': tasks_info['user']}
+        update_set = {"$set": {'task_id': tasks_info['task_id'],
+                               'user': tasks_info['user'], 'status': tasks_info['status'],
+                               'created_at': time.strftime("%Y-%m-%d %H:%M:%S")}}
+        res = score_col.update_one(select, update_set, upsert=True)
+        return res
+
+
+    def video_query_user_task(self, user, skip, limit_num):
+        score_col = db['rango_tagging_users']
+        skip = (skip - 1) * limit_num
+        res = list(score_col.find({'user': user}, {'_id': 0}).skip(skip).limit(limit_num))
+        return res
+
     def video_query_task_score(self, task_id: str):
         score_col = db['rango_tagging_score_summary']
         res = score_col.find_one({'task_id': task_id}, {'scores': 1, '_id': 0})
@@ -99,6 +116,7 @@ class TaggingDao(object):
         score_summary_col = db['rango_tagging_score_summary']
         score_summary_col.insert_one({'task_id': task_id, 'scores': res_score})
         return res_score
+
 
 class EvaluationDao(object):
     """ 自动评估层数据接口
