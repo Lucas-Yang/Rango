@@ -6,8 +6,8 @@ import cv2
 from typing import Optional
 import requests
 from request_utils import RequestUtils
-from yuu_common.utils.log_utils import LogUtils
-from yuu_common.utils.oss_utils import OSSUtils
+from app.common.boss import Boss
+from app.common.log_utils import LogUtils
 
 
 class FRVideoEvaluationFactory(object):
@@ -290,6 +290,7 @@ class NRVideoEvaluationFactory(object):
         :return:
         """
         blurred_image_list = []
+        upload_boss = Boss()
         try:
             self.logger.debug("Start blurred debug...")
             # 将视频切帧
@@ -302,12 +303,13 @@ class NRVideoEvaluationFactory(object):
                         files = [('file', (filepath, open(filepath, 'rb'), 'image/jpg'))]
                         response = RequestUtils.safe_post(url=url, files=files)
                         if response["data"]["judge"]:
-                            url = OSSUtils.upload_file(filepath)
+                            url = upload_boss.upload_file(filepath)
                             blurred_image_list.append(url)
                     except Exception as e:
                         self.logger.debug(e)
             self.del_files(frames_save_path)
             os.remove(self.__video_local_path)
+            del upload_boss
             return blurred_image_list
         except Exception as e:
             self.logger.debug(e)
@@ -399,8 +401,8 @@ class NRVideoEvaluationFactory(object):
 
 
 if __name__ == '__main__':
-    # fr = FRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
-    #                               'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
-    # print(fr.get_video_psnr())
-    nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4')
-    print(nr.get_video_clarity())
+    fr = FRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
+                                  'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
+    print(fr.get_video_ssim())
+    # nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4')
+    # print(nr.get_video_blurred_frame())
