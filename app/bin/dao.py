@@ -33,8 +33,9 @@ class TaggingDao(object):
         if user == 'all':
             user = {'$regex': '.*'}
         skip = (skip - 1) * limit_num
-        res = list(task_col.find({'user': user}, {'_id': 0}).skip(skip).limit(limit_num))
-        return res
+        count = len(list(task_col.find({'user': user})))
+        res = list(task_col.find({'user': user}, {'_id': 0}).sort([("created_at", -1)]).skip(skip).limit(limit_num))
+        return res, count
 
     def delete_tagging_task(self, task_id):
         task_col = db['rango_evaluate_tasks']
@@ -43,22 +44,25 @@ class TaggingDao(object):
 
     def modify_tagging_task(self, query: model.TaggingTaskUpdate):
         task_col = db['rango_evaluate_tasks']
-        query = {'task_id': query.task_id}
-        update = {"$set": {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}}
 
-        if query.result:
+        update = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
+
+        if query.job_name:
             update['job_name'] = query.job_name
 
-        if query.similarity:
+        if query.questionnaire_num:
             update['questionnaire_num'] = query.questionnaire_num
 
-        if query.casename:
+        if query.expire_data:
             update['expire_data'] = query.expire_data
 
         if query.status:
             update['status'] = query.status
-        res = task_col.update_one(query, update)
-        return res
+        select = {'task_id': query.task_id}
+        update = {"$set": update}
+
+        res = task_col.update_one(select, update)
+        return res.modified_count
 
     def delete_upload_file(self, fid):
         file_col = db['rango_task_files']
@@ -70,7 +74,6 @@ class TaggingDao(object):
         res = score_col.insert_one(score_info)
         return res
 
-
     def record_tagging_task_user(self, tasks_info: dict):
         score_col = db['rango_tagging_users']
         select = {'task_id': tasks_info['task_id'], 'user': tasks_info['user']}
@@ -80,12 +83,12 @@ class TaggingDao(object):
         res = score_col.update_one(select, update_set, upsert=True)
         return res
 
-
     def video_query_user_task(self, user, skip, limit_num):
         score_col = db['rango_tagging_users']
         skip = (skip - 1) * limit_num
-        res = list(score_col.find({'user': user}, {'_id': 0}).skip(skip).limit(limit_num))
-        return res
+        count = len(list(score_col.find({'user': user})))
+        res = list(score_col.find({'user': user}, {'_id': 0}).sort([("created_at", -1)]).skip(skip).limit(limit_num))
+        return res, count
 
     def video_query_task_score(self, task_id: str):
         score_col = db['rango_tagging_score_summary']

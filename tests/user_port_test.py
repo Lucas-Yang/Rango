@@ -1,7 +1,7 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-接口单元测试
+user接口单元测试
 """
 import pytest
 import requests
@@ -78,4 +78,4 @@ class TestProject(object):
 
 
 if __name__ == "__main__":
-    pytest.main(["-s", "port_test.py"])
+    pytest.main(["-s", "user_port_test.py"])
