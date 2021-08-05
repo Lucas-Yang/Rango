@@ -24,6 +24,7 @@ def upload_data(obj, task_id, group_id, video_index, file_name):
     insert_data = {'task_id': task_id, 'group_id': group_id, 'video_index': video_index, 'fid': fid,
                    'file_name': file_name, 'status': 0}
     collection.insert_one(insert_data)
+    del insert_data['_id']
     # upload
     boss = Boss()
     boss_url = boss.upload_data(obj, file_name)
@@ -36,7 +37,7 @@ def upload_data(obj, task_id, group_id, video_index, file_name):
 
 
 @app.task()
-def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_date, job_detail):
+def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_date, job_detail=None):
     """
     created_at 创建日期
     updated_at 修改日期
@@ -49,6 +50,8 @@ def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_dat
     expire_data 评估有效期
     """
     # todo status
+    if job_detail is None:
+        job_detail = {}
     file_col = db['rango_task_files']
     res = file_col.find({'task_id': task_id}, {'group_id': 1, 'video_index': 1, 'boss_url': 1, 'status': 1}).sort(
         [('group_id', 1)])
