@@ -10,6 +10,7 @@ import pytest
 import requests
 
 task_id = ''
+fid = ''
 
 
 class TestProject(object):
@@ -54,16 +55,16 @@ class TestProject(object):
         assert response.json()['msg'] == 'success'
         assert response.json()['data']['modify_num'] == 1
 
-    def test_query_task(self):
-        url = "http://localhost:8000/video/tagging/task/status"
-        data_json = {
-            "task_id": task_id
-        }
-        response = requests.get(url=url, params=data_json)
-        assert response.status_code == 200
-        assert response.json()['code'] == 0
-        assert response.json()['msg'] == 'success'
-        assert response.json()['data']['task_info']['task_id'] == task_id
+    # def test_query_task(self):
+    #     url = "http://localhost:8000/video/tagging/task/status"
+    #     data_json = {
+    #         "task_id": task_id
+    #     }
+    #     response = requests.get(url=url, params=data_json)
+    #     assert response.status_code == 200
+    #     assert response.json()['code'] == 0
+    #     assert response.json()['msg'] == 'success'
+    #     assert response.json()['data']['task_info']['task_id'] == task_id
 
     def test_query_task_by_user(self):
         url = "http://localhost:8000/video/tagging/task-status"
@@ -91,9 +92,12 @@ class TestProject(object):
         assert response.json()['msg'] == 'success'
         assert response.json()['data']['file_name'] == 'README.md'
         assert response.json()['data']['file_address'] != ""
+        file_info = eval(response.json()['data']['file_address'])
+        global fid
+        fid = file_info['fid']
 
     def test_task_score(self):
-        url = "http://localhost:8000/video/tagging/task/score"
+        url = "http://localhost:8000/video/tagging/group/score"
         data_json = {
             "task_id": task_id,
             "group_id": 1,
@@ -107,7 +111,7 @@ class TestProject(object):
         assert response.json()['data']['insert_info']['task_id'] == task_id
 
     def test_video_record_task_user(self):
-        url = "http://localhost:8000/video/tagging/task/record/user"
+        url = "http://localhost:8000/video/tagging/task/user"
         data_json = {
             "task_id": task_id,
             "status": "do",
@@ -120,7 +124,7 @@ class TestProject(object):
         assert response.json()['data']['insert_info'] == "jiangzheng@bilibili.com"
 
     def test_compute_task_score(self):
-        url = "http://localhost:8000/video/tagging/task/computed/score"
+        url = "http://localhost:8000/video/tagging/task/score"
         data_json = {
             "task_id": task_id
         }
@@ -133,24 +137,24 @@ class TestProject(object):
     def test_query_task_score(self):
         url = "http://localhost:8000/video/tagging/task/score"
         data_json = {
-            "task_id": task_id
+            "user": "jiangzheng@bilibili.com"
         }
         response = requests.get(url=url, params=data_json)
         assert response.status_code == 200
         assert response.json()['code'] == 0
         assert response.json()['msg'] == 'success'
-        assert response.json()['data']['scores'] == [[5.0]]
+        assert response.json()['data']['count'] > 0
 
-    # def test_video_delete(self):
-    #     url = "http://localhost:8000/video/task-file/delete"
-    #     data_json = {
-    #         "fid": fid
-    #     }
-    #     response = requests.delete(url=url, json=data_json)
-    #     assert response.status_code == 200
-    #     assert response.json()['code'] == 0
-    #     assert response.json()['msg'] == 'success'
-    #     assert response.json()['data']['data'] == "jiangzheng@bilibili.com"
+    def test_video_delete(self):
+        url = "http://localhost:8000/video/task-file/delete"
+        data_json = {
+            "fid": fid
+        }
+        response = requests.delete(url=url, params=data_json)
+        assert response.status_code == 200
+        assert response.json()['code'] == 0
+        assert response.json()['msg'] == 'success'
+        assert response.json()['data']['task_delete_info'] == 1
 
     def test_task_delete(self):
         url = "http://localhost:8000/video/tagging/task"

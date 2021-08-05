@@ -46,14 +46,14 @@ async def get_task_task_id():
     return session_id[:12]
 
 
-@video_app.get('/tagging/task/status', response_model=BinModelReturn, summary="标注任务查询")
-async def mos_video_task_status(task_id: str):
-    """ 标注任务查询
-    :return:
-    """
-
-    res = TaggingDao().query_tagging_task(task_id=task_id)
-    return BinModelReturn(code=0, msg="success", data={"task_info": res})
+# @video_app.get('/tagging/task/status', response_model=BinModelReturn, summary="标注任务查询")
+# async def mos_video_task_status(task_id: str):
+#     """ 标注任务查询
+#     :return:
+#     """
+#
+#     res = TaggingDao().query_tagging_task(task_id=task_id)
+#     return BinModelReturn(code=0, msg="success", data={"task_info": res})
 
 
 @video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询")
