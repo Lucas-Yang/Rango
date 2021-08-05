@@ -1,8 +1,7 @@
 from typing import Optional, Any, Mapping
-
 import requests
 from requests.structures import CaseInsensitiveDict
-from yuu_common.utils.log_utils import LogUtils
+from app.common.logger import LogManager
 
 
 class RequestUtils:
@@ -39,7 +38,7 @@ class RequestUtils:
             params=params,
             timeout=timeout,
             **kwargs)
-        LogUtils.LOGGER_DEBUG.debug(res.json() if res is not None and res.status_code == 200 else "None")
+        LogManager().logger.info(res.json() if res is not None and res.status_code == 200 else "None")
         return res.json() if res is not None and res.status_code == 200 else None
 
     @staticmethod
@@ -55,7 +54,7 @@ class RequestUtils:
 
     @staticmethod
     def safe_post(url: str, data: Mapping = None, json: Any = None, timeout: int = 10, **kwargs) -> Optional[Any]:
-        LogUtils.LOGGER_DEBUG.debug(json)
+        LogManager().logger.info(json)
         res = RequestUtils.__safe_req(
             method='post',
             url=url,
@@ -64,7 +63,7 @@ class RequestUtils:
             timeout=timeout,
             **kwargs
         )
-        LogUtils.LOGGER_DEBUG.debug(res.json() if res is not None and res.status_code == 200 else "None")
+        LogManager().logger.info(res.json() if res is not None and res.status_code == 200 else "None")
         return res.json() if res is not None and res.status_code == 200 else None
 
     @staticmethod

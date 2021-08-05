@@ -10,7 +10,9 @@ from app.common.billions_logger_py.lancerhandler import LancerStream
 class LogManager(object):
     def __init__(self):
         self.logger = logging.getLogger()
-        self.logHandler = logging.StreamHandler(stream=LancerStream("000069", "/var/run/lancer/collector.sock"))
+        # self.logHandler = logging.StreamHandler(stream=LancerStream("000069", "/var/run/lancer/collector.sock"))
+        # 本地测试路径
+        self.logHandler = logging.StreamHandler(stream=LancerStream("000069", "/tmp/billions_debuger/debuger.sock"))
         self.formatter = JsonFormatter(
             additional_fields={
                 'app_id': "test.ep.fuzz"})
