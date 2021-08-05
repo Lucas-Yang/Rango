@@ -360,10 +360,6 @@ class NRVideoEvaluationFactory(object):
         :return: 返回切帧之后的数据
         """
         image_list = []
-        video_name = os.path.split(self.__video_local_path)[-1].split(".")[0]  # 不带后缀的文件名
-        frames_save_path = os.path.abspath(os.path.join(self.__video_local_path, "..")) + '/' + video_name
-        if not os.path.exists(frames_save_path):
-            os.makedirs(frames_save_path)
         vc = cv2.VideoCapture(self.__video_local_path)
         total_frames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
         interval = total_frames / 20  # 按照一定间隔将视频20等分，切成20张图片
@@ -383,19 +379,10 @@ class NRVideoEvaluationFactory(object):
         duration = FrameNumber / rate
         return duration
 
-    @staticmethod
-    def del_files(dirname):
-        """
-        删除文件夹下所有文件及该文件夹
-        """
-        for file in os.listdir(dirname):
-            os.remove(os.path.join(dirname, file))
-        os.removedirs(dirname)
-
 
 if __name__ == '__main__':
     # fr = FRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
     #                               'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
     # print(fr.get_video_vmaf())
     nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4')
-    print(nr.get_video_freeze_time())
+    print(nr.get_video_blurred_frame())
