@@ -135,10 +135,25 @@ class VideoEvaluationNRIndex(Enum):
     NIQE = 2
 
 
+@unique
+class VideoEvaluationType(Enum):
+    """ 全参考/无参考
+    """
+    FR = 0
+    NR = 1
+
+
+class EvaluationTaskDetail(BaseModel):
+    """ 评估任务task 详情
+    """
+    index: List[str]
+    index_type: VideoEvaluationType
+
+
 class EvaluationTaskCreate(TaggingTaskCreate):
     """ 标注任务模块- 创建任务
     """
-    job_details: Optional[dict]
+    job_details: Optional[EvaluationTaskDetail]
 
 
 
