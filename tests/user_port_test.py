@@ -6,9 +6,11 @@ user接口单元测试
 import pytest
 import requests
 
+from app.common.db import RedisClient
+
 Token = ''
-test_email = "jiangzheng@bilibili.com"
-password = "123"
+test_email = "luoyadong@bilibili.com"
+password = "admin"
 
 
 class TestProject(object):
@@ -24,6 +26,21 @@ class TestProject(object):
         assert response.status_code == 200
         assert response.json()['code'] == 0
         assert response.json()['msg'] == 'success'
+
+    def test_user_register(self):
+        """
+        :return:
+        """
+        redis_handle = RedisClient()
+        vcode = redis_handle.get_data(test_email)
+        url = "http://localhost:8000/user/register"
+        data_json = {
+            "email": test_email,
+            "password": password,
+            "vcode": vcode
+        }
+        response = requests.post(url=url, json=data_json)
+        assert response.status_code == 200
 
     def test_user_login(self):
         url = "http://localhost:8000/user/login"

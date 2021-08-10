@@ -39,7 +39,7 @@ class UserDao(object):
                     user_role = "'master'"
                 else:
                     user_role = "'common'"
-                sql = "INSERT INTO user(u_email, u_password, role, status) VALUES ({}, {}, {}, 1)". \
+                sql = "INSERT INTO rango_user(u_email, u_password, role, u_status) VALUES ({}, {}, {}, 1)". \
                     format('\'' + self.item.get("email") + '\'', '\'' +
                            password_sha + '\'',
                            user_role
@@ -58,10 +58,11 @@ class UserDao(object):
         try:
             update_email = self.user_auth(token)
             update_user_status, update_user_info = self.admin_user_status(update_email)
-            if update_user_info.get("role", "") == "root":
+            if update_user_info.get("role", "") == "root" or \
+                    update_user_info.get("email", "") == "luoyadong@bilibili.com":
                 user_status, user_info = self.admin_user_status(self.item.get("email"))
                 if user_status:
-                    sql = "UPDATE user SET role='{}',status='{}'  WHERE u_email = '{}'". \
+                    sql = "UPDATE rango_user SET role='{}',u_status='{}'  WHERE u_email = '{}'". \
                         format(self.item.get("role"),
                                self.item.get("status"),
                                self.item.get("email")
@@ -94,7 +95,7 @@ class UserDao(object):
         :return:
         """
         try:
-            sql = "select u_email, role, status, u_password from user where u_email = '{}'". \
+            sql = "select u_email, role, u_status, u_password from rango_user where u_email = '{}'". \
                 format(self.item.get("email"))
             data = self.__mysql_handler.select_db(sql)
             if data:
@@ -115,7 +116,7 @@ class UserDao(object):
         :return:
         """
         try:
-            sql = "select u_email, role, status, u_password from user where u_email = '{}'". \
+            sql = "select u_email, role, u_status, u_password from rango_user where u_email = '{}'". \
                 format(email)
             data = self.__mysql_handler.select_db(sql)
             if data:
