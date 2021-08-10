@@ -1,10 +1,10 @@
 # mysql
 mysql_config = {
-    "host": "127.0.0.1",
-    "username": "root",
-    "password": "Jz19980429#",
-    "database": "rango",
-    "port": 3306
+    "host": "172.23.34.45",
+    "username": "fuzz",
+    "password": "WVmS551f50dcIBHQggEtsnsYw8mkk3ZI",
+    "database": "fuzz",
+    "port": 5278
 }
 
 # mongo

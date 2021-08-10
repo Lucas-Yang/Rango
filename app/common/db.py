@@ -156,8 +156,11 @@ class MyMongoClient(object):
 class RedisClient(object):
     """ redis 操作封装类
     """
-    def __init__(self, host=config.redis_config.get('host'),
-                 port=config.redis_config.get('port'), decode_responses=True):
+    def __init__(self,
+                 host=config.redis_config.get('host'),
+                 port=config.redis_config.get('port'),
+                 decode_responses=True
+                 ):
         """
         """
         self.__pool = redis.ConnectionPool(host=host, port=port, decode_responses=True)
