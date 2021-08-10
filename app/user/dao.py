@@ -21,6 +21,11 @@ class UserDao(object):
         self.__mysql_handler = MySQLClient()
         self.__jwt_handler = UserJwt(self.item)
         self.__redis_handle = RedisClient()
+        self.__credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="认证失败",
+            headers={'WWW-Authenticate': "Bearer"}
+        )
 
     def user_register(self):
         """
@@ -73,7 +78,9 @@ class UserDao(object):
                     return False, "update failed, {}".format(user_info)
             else:
                 return False, "u have no right to update user info, because u are not admin user"
-        except Exception as error:
+        except HTTPException:
+            raise self.__credentials_exception
+        except BaseException as error:
             return False, str(error)
 
     def user_login(self):
@@ -147,22 +154,17 @@ class UserDao(object):
         """ 用户认证
         :return:
         """
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="认证失败",
-            headers={'WWW-Authenticate': "Bearer"}
-        )
         # 验证token
         try:
             payload = self.__jwt_handler.check_jwt_token(token)
             user_email = payload.get('email')
             if not user_email:
-                raise credentials_exception
+                raise self.__credentials_exception
             else:
                 return user_email
         except Exception as e:
             print(f'认证异常: {e}')
-            raise credentials_exception
+            raise self.__credentials_exception
 
     def close_model(self):
         self.__mysql_handler.close_db()
