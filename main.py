@@ -3,6 +3,7 @@
 """
 fastapi 接口启动
 """
+import argparse
 import multiprocessing
 import uvicorn
 
@@ -16,5 +17,12 @@ app.include_router(user_app, prefix="/user")
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True, debug=True,
+    parser = argparse.ArgumentParser(description='manual to this script')
+    parser.add_argument('-rl', '--reload', type=str, default=None, help="reload code")
+    args = parser.parse_args()
+    if args.reload:
+        reload = False
+    else:
+        reload = True
+    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=reload, debug=reload,
                 workers=multiprocessing.cpu_count())
