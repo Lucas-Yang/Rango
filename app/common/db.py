@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 import aioredis
 from pymongo import MongoClient
-import config.testconfig as config
+import config.config as config
 
 
 class MySQLClient(object):
