@@ -16,3 +16,4 @@ boto3~=1.16.56
 python-multipart
 opencv-python==4.4.0.40
 requests
+opencv-python-headless
