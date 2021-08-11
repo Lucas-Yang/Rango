@@ -33,8 +33,8 @@ email_config = {
 
 
 class CeleryConfig:
-    broker_url = 'redis://0.0.0.0:6379/3'
-    backend = 'redis://0.0.0.0:6379/4'
+    broker_url = 'redis://127.0.0.1:26891/3'
+    backend = 'redis:///127.0.0.1:26891/4'
     task_track_started = True
     enable_utc = True
     timezone = 'Asia/Shanghai'

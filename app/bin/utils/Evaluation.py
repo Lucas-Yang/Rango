@@ -7,7 +7,7 @@ import time
 import cv2
 from typing import Optional
 import requests
-from request_utils import RequestUtils
+from app.bin.utils.request_utils import RequestUtils
 from app.common.boss import Boss
 from app.common.logger import LogManager
 
