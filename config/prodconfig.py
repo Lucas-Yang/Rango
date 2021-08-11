@@ -1,9 +1,9 @@
 # mysql 和 fuzz 共用了一套数据库, asko proxy: fuzz
 mysql_config = {
     "host": "127.0.0.1",
-    "username": "fuzz",
-    "password": "WVmS551f50dcIBHQggEtsnsYw8mkk3ZI",
-    "database": "fuzz",
+    "username": "rango",
+    "password": "zIqRppohJafxRp9LHlKbPN7PAMmNhH4Z",
+    "database": "rango",
     "port": 3306
 }
 
