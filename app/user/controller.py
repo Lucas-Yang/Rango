@@ -116,7 +116,7 @@ async def get_verify_code(email):
     :return
     """
     redis_handle = RedisClient()
-    status, msg = redis_handle.create_verification_code(email)
+    status, msg = redis_handle.async_create_verification_code(email)
     if status:
         return UserModelReturn(code=0, msg="success", data={"info": msg})
     else:

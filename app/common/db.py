@@ -1,5 +1,6 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
+from threading import Thread
 
 import pymysql
 import time
@@ -225,13 +226,25 @@ class RedisClient(object):
             server.close()
             return True, "验证码发送成功"
         except smtplib.SMTPException:
-            return False, "邮件发送失败"
+            raise Exception("邮件发送失败")
+
+    def async_create_verification_code(self, email):
+        """
+        :param email:
+        :return:
+        """
+        try:
+            thread = Thread(target=self.create_verification_code, args=(email,))
+            thread.start()
+            return True, "验证码发送成功"
+        except Exception as error:
+            return False, str(error)
 
 
 if __name__ == "__main__":
-    mysql_handler_1 = MySQLClient()
-    mysql_handler_1.close_db()
-    print(mysql_handler_1.db.ping())
-    print(mysql_handler_1.db)
-    mysql_handler_2 = MySQLClient()
-    print(mysql_handler_1 is mysql_handler_2)
+    redis_client = RedisClient()
+    t1 = time.time()
+    redis_client.create_verification_code("luoyadong@bilibili.com")
+    print(time.time() - t1)
+    print(redis_client.async_create_verification_code("luoyadong@bilibili.com"))
+    print(time.time() - t1)
