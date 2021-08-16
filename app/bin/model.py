@@ -147,8 +147,8 @@ class VideoEvaluationType(Enum):
 class EvaluationTaskDetail(BaseModel):
     """ 评估任务task 详情
     """
-    index: List[str]
-    index_type: int
+    index: List[int]
+    index_type: VideoEvaluationType
 
 
 class EvaluationTaskCreate(TaggingTaskCreate):
