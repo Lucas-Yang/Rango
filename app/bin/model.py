@@ -35,9 +35,9 @@ class TaggingTaskCreate(BaseModel):
     """ 标注任务模块- 创建任务
     """
     task_id: str
-    job_name: str
+    task_name: str
     user: str
-    job_type: str
+    task_type: str
     questionnaire_num: int
     expire_data: Optional[datetime]
 
@@ -46,7 +46,7 @@ class TaggingTaskUpdate(BaseModel):
     """ 标注任务模块- 修改任务
     """
     task_id: str
-    job_name: Optional[str]
+    task_name: Optional[str]
     questionnaire_num: Optional[int]
     expire_data: Optional[datetime]
     status: Optional[int]
@@ -133,6 +133,7 @@ class VideoEvaluationNRIndex(Enum):
     FREEZE = 0
     DEFINITION = 1
     NIQE = 2
+    BRISQUE = 3
 
 
 @unique
@@ -147,13 +148,13 @@ class EvaluationTaskDetail(BaseModel):
     """ 评估任务task 详情
     """
     index: List[str]
-    index_type: VideoEvaluationType
+    index_type: int
 
 
 class EvaluationTaskCreate(TaggingTaskCreate):
     """ 标注任务模块- 创建任务
     """
-    job_details: Optional[EvaluationTaskDetail]
+    task_details: Optional[EvaluationTaskDetail]
 
 
 

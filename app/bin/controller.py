@@ -10,6 +10,7 @@ from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, 
 
 from app.bin.dao import TaggingDao
 from app.bin.tasks import celery_app
+from app.bin.tasks.evaluation_task import evaluation_task
 from app.user import oauth2_scheme
 
 video_app = APIRouter()
@@ -23,7 +24,7 @@ async def mos_video_task_create(item: TaggingTaskCreate):
     """ 创建标注任务接口
     :return:
     """
-    task.create_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
+    task.create_task(item.task_id, item.task_name, item.user, item.task_type, item.questionnaire_num,
                      item.expire_data)
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
@@ -44,16 +45,6 @@ async def get_task_task_id():
     :return:
     """
     return session_id[:12]
-
-
-# @video_app.get('/tagging/task/status', response_model=BinModelReturn, summary="标注任务查询")
-# async def mos_video_task_status(task_id: str):
-#     """ 标注任务查询
-#     :return:
-#     """
-#
-#     res = TaggingDao().query_tagging_task(task_id=task_id)
-#     return BinModelReturn(code=0, msg="success", data={"task_info": res})
 
 
 @video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询")
@@ -108,16 +99,6 @@ async def moss_video_computed_task_score(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"insert_info": res})
 
 
-# @video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="查询打分")
-# async def moss_video_query_task_score(task_id: str):
-#     """
-#     插入标注视频分数
-#     :return:
-#     """
-#     res = TaggingDao().video_query_task_score(task_id)
-#     return BinModelReturn(code=0, msg="success", data=res)
-
-
 @video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务")
 async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: int = 10):
     """
@@ -136,10 +117,10 @@ async def evaluate_video_task_create(item: EvaluationTaskCreate):
     """ 评估任务创建
     :return:
     """
-    r = celery_app.delay(item.dict())
-    task_id = r.task_id
-    task.create_task(item.task_id, item.job_name, item.user, item.job_type, item.questionnaire_num,
-                     item.expire_data, job_detail=item.job_details)
+    print(item.dict().get("task_details").get("index_type"))
+    task.create_task(item.task_id, item.task_name, item.user, item.task_type, item.questionnaire_num,
+                     item.expire_data, job_detail=item.task_details)
+    evaluation_task.delay(item.task_id)
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
