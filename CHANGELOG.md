@@ -9,3 +9,10 @@
 
 ### 发布commit_id
 - xxxx
+
+## 2021-08-17
+### 功能描述
+- 主功能完善，配置完善
+
+### 发布commit_id
+- 5e592d63b4f4ab6a1b7d8aa5f9a27c30ff5261dc
