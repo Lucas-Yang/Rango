@@ -32,6 +32,7 @@ def evaluation_task(task_id):
         task_info_dict = data
     index_type = task_info_dict.get("task_detail", {}).get("index_type", None)
     index_list = task_info_dict.get("task_detail", {}).get("index", None)
+    task_user = task_info_dict.get("user", None)
     groups_result_dict = {}
     if index_type == VideoEvaluationType.FR.value:
         for group_id, video_url_list in enumerate(task_info_dict.get("groups")):
@@ -72,6 +73,7 @@ def evaluation_task(task_id):
     else:
         pass
     task_result_dict["task_evaluation_result"] = groups_result_dict
+    task_result_dict["user"] = task_user
     print(task_result_dict)
     result_collection = db["rango_evaluation_task_result"]
     result_collection.insert_one(task_result_dict)

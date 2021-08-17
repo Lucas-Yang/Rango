@@ -8,7 +8,7 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, \
     TaggingTaskScore, TaggingTaskUpdate, EvaluationTaskCreate, UserTaskStatus
 
-from app.bin.dao import TaggingDao
+from app.bin.dao import TaggingDao, EvaluationDao
 from app.bin.tasks import celery_app
 from app.bin.tasks.evaluation_task import evaluation_task
 from app.user import oauth2_scheme
@@ -154,7 +154,9 @@ async def personal_evaluate_video_task_status(user_id: str):
     """
     :return:
     """
-    pass
+    evaluate_client = EvaluationDao()
+    personal_task_info = evaluate_client.get_task_personal_result(user_id)
+    return BinModelReturn(code=0, msg="success", data={"result_list": personal_task_info})
 
 
 @video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务总查询")
