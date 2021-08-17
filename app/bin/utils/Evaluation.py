@@ -209,6 +209,12 @@ class NRVideoEvaluationFactory(object):
             self.logger.error(str(e))
             return json.dumps({"data": {"description": "niqe检测出现错误！"}}, ensure_ascii=False)
 
+    def get_video_brisque(self):
+        """
+        :return:
+        """
+        return
+
     def get_video_black_frame(self, black_threshold=0.999):
         """ 视频黑屏检测
         :return:

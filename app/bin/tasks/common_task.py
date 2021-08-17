@@ -8,14 +8,13 @@ import uuid
 from operator import itemgetter
 
 from app.common.boss import Boss
-from app.common.db import MyMongoClient
+from app.common import mongodb_client
 from app.bin.tasks import celery_app as app
-
-db = MyMongoClient().db
 
 
 @app.task()
 def upload_data(obj, task_id, group_id, video_index, file_name):
+    db = mongodb_client
     collection = db['rango_task_files']
     fid = f'{uuid.uuid4()}'
     logging.info(fid)
@@ -37,7 +36,7 @@ def upload_data(obj, task_id, group_id, video_index, file_name):
 
 
 @app.task()
-def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_date, job_detail=None):
+def create_task(task_id, task_name, user, task_type, questionnaire_num, expire_date, task_detail={}):
     """
     created_at 创建日期
     updated_at 修改日期
@@ -49,9 +48,11 @@ def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_dat
     collected_questionnaire_num  已收集的问卷数量
     expire_data 评估有效期
     """
-    # todo status
-    if job_detail is None:
-        job_detail = {}
+    if task_detail != {}:
+        task_detail["index_type"] = task_detail["index_type"].value
+    else:
+        pass
+    db = mongodb_client
     file_col = db['rango_task_files']
     res = file_col.find({'task_id': task_id}, {'group_id': 1, 'video_index': 1, 'boss_url': 1, 'status': 1}).sort(
         [('group_id', 1)])
@@ -65,9 +66,16 @@ def create_task(task_id, job_name, user, job_type, questionnaire_num, expire_dat
     collection = db['rango_evaluate_tasks']
 
     insert_data = {
-        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"), "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "task_id": task_id, "job_name": job_name, "job_type": job_type, "groups": groups, "user": user,
-        "questionnaire_num": questionnaire_num, "expire_data": expire_date, "status": 0
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "task_id": task_id,
+        "task_name": task_name,
+        "task_type": task_type,
+        "groups": groups,
+        "user": user,
+        "questionnaire_num": questionnaire_num,
+        "expire_data": expire_date,
+        "task_detail": task_detail,
+        "status": 0
     }
-    print(insert_data)
     collection.insert_one(insert_data)
