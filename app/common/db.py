@@ -128,12 +128,6 @@ class MyMongoClient(object):
                              password=config.mongo_config.get('mongodb_password'))
         self.db_initial_time = time.strftime("%Y-%m-%d %H:%M:%S")
 
-    # def db(self):
-    #     """
-    #     :return:
-    #     """
-    #     return self.db
-
     def insert(self, collection, data):
         """
         :param collection:

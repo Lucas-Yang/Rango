@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from typing import Optional, List, ByteString
 from pydantic import BaseModel, Field, BaseConfig
 from enum import Enum, unique
-from fastapi import UploadFile, File
 
 from app.common.data import ReturnCode
 
@@ -14,7 +13,7 @@ from app.common.data import ReturnCode
 
 @unique
 class TagTypes(Enum):
-    """ 错误码枚举
+    """
     """
     SINGLE_TYPE = 0  # 无参考标注
     DOUBLE_TYPE = 1  # 有参考视频标注
@@ -33,6 +32,19 @@ class BinModelReturn(BaseModel):
 
 class TaggingTaskCreate(BaseModel):
     """ 标注任务模块- 创建任务
+
+    task_id: 任务id（唯一)
+
+    task_name: 任务名字
+
+    user: 创建人
+
+    task_type: 任务类型，tagging(标注) / evaluation(自动评估)
+
+    questionnaire_num: 收集样本量
+
+    expire_data: 过期时间
+
     """
     task_id: str
     task_name: str
@@ -43,10 +55,20 @@ class TaggingTaskCreate(BaseModel):
 
 
 class TaggingTaskUpdate(BaseModel):
-    """ 标注任务模块- 修改任务
+    """ 标注任务模块 - 修改任务
+
+    task_id: 任务id（唯一)
+
+    task_name: 任务名字
+
+    questionnaire_num: 收集样本量
+
+    expire_data: 过期时间
+
+    status: 是否可标注
     """
     task_id: str
-    task_name: Optional[str]
+    task_name: Optional[str]  # 任务名字
     questionnaire_num: Optional[int]
     expire_data: Optional[datetime]
     status: Optional[int]
@@ -58,30 +80,6 @@ class DateEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
         else:
             return json.JSONEncoder.default(self, obj)
-
-
-# class JobInfo(BaseModel):
-#     """
-#     created_at 创建日期
-#     updated_at 修改日期
-#     job_id 任务标识 唯一主键
-#     job_name 任务描述
-#     job_type  任务类型  标注,指标
-#     tasks  视频列表
-#     questionnaire_num 评估问卷数量
-#     collected_questionnaire_num  已收集的问卷数量
-#     expire_data 评估有效期
-#     """
-#     created_at: Optional[datetime] = Field(None, alias="createdAt")
-#     updated_at: Optional[datetime] = Field(None, alias="updatedAt")
-#     job_id: ByteString = Field(None)
-#     job_name: ByteString
-#     job_desc: ByteString
-#     job_type: ByteString
-#     tasks: List
-#     questionnaire_num: int
-#     collected_questionnaire_num: int
-#     expire_data: Optional[datetime]
 
 
 class TaggingTaskStatus(BaseModel):
@@ -100,6 +98,14 @@ class TaggingTaskGroupScore(BaseModel):
 
 class TaggingTaskScore(BaseModel):
     """ 标注任务模块 - 打分回收接口
+
+    task_id: 任务id
+
+    group_id: 任务-文件组id
+
+    scores: 组内每个文件的分数
+
+    user: 打分人id
     """
     task_id: str
     group_id: int
@@ -130,15 +136,18 @@ class VideoEvaluationFRIndex(Enum):
 class VideoEvaluationNRIndex(Enum):
     """ 视频无参考指标
     """
-    FREEZE = 0
-    DEFINITION = 1
-    NIQE = 2
-    BRISQUE = 3
+    DEFINITION = 0
+    NIQE = 1
+    BRISQUE = 2
 
 
 @unique
 class VideoEvaluationType(Enum):
     """ 全参考/无参考
+
+    FR: 0  # 全参考(两个视频)
+
+    NR: 1  # 无参考(单个视频)
     """
     FR = 0
     NR = 1
@@ -146,13 +155,18 @@ class VideoEvaluationType(Enum):
 
 class EvaluationTaskDetail(BaseModel):
     """ 评估任务task 详情
+
+    index: 具体的指标(全参考：{SSIM = 0， PSNR = 1， VMAF = 2}
+    无参考： { DEFINITION = 0, NIQE = 1, BRISQUE = 2}
+
+    index_type: 指标类型
     """
     index: List[int]
     index_type: VideoEvaluationType
 
 
 class EvaluationTaskCreate(TaggingTaskCreate):
-    """ 标注任务模块- 创建任务
+    """ 评估任务模块 - 创建任务
     """
     task_details: Optional[EvaluationTaskDetail]
 

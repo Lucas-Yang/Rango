@@ -117,9 +117,10 @@ async def evaluate_video_task_create(item: EvaluationTaskCreate):
     """ 评估任务创建
     :return:
     """
-    print(item.dict().get("task_details").get("index_type"))
-    task.create_task(item.task_id, item.task_name, item.user, item.task_type, item.questionnaire_num,
-                     item.expire_data, job_detail=item.task_details)
+    task.create_task(item.task_id, item.task_name, item.user,
+                     item.task_type, item.questionnaire_num,
+                     item.expire_data, task_detail=item.task_details.dict()
+                     )
     evaluation_task.delay(item.task_id)
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
@@ -127,6 +128,14 @@ async def evaluate_video_task_create(item: EvaluationTaskCreate):
 @video_app.put('/evaluation/task', response_model=BinModelReturn, summary="评估任务修改")
 async def evaluate_video_task_update():
     """ 评估任务修改
+    :return:
+    """
+    pass
+
+
+@video_app.delete('/evaluation/task', response_model=BinModelReturn, summary="评估任务删除")
+async def evaluate_video_task_delete():
+    """ 评估任务删除
     :return:
     """
     pass
@@ -151,14 +160,6 @@ async def personal_evaluate_video_task_status(user_id: str):
 @video_app.get('/evaluation/task/status', response_model=BinModelReturn, summary="评估任务总查询")
 async def evaluate_video_task_status(item: TaggingTaskStatus):
     """
-    :return:
-    """
-    pass
-
-
-@video_app.delete('/evaluation/task', response_model=BinModelReturn, summary="评估任务删除")
-async def evaluate_video_task_delete():
-    """ 评估任务删除
     :return:
     """
     pass
