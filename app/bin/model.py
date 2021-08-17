@@ -167,6 +167,20 @@ class EvaluationTaskDetail(BaseModel):
 
 class EvaluationTaskCreate(TaggingTaskCreate):
     """ 评估任务模块 - 创建任务
+    task_id: 任务id（唯一)
+
+    task_name: 任务名字
+
+    user: 创建人
+
+    task_type: 任务类型，tagging(标注) / evaluation(自动评估)
+
+    questionnaire_num: 收集样本量
+
+    expire_data: 过期时间
+
+    task_details: 任务详情
+
     """
     task_details: Optional[EvaluationTaskDetail]
 
