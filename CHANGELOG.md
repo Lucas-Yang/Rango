@@ -23,3 +23,10 @@
 
 ### 发布commit_id
 - dd799ffb96943256c4d1d5048c7efbdd3250e95c
+
+## 2021-08-17
+### 功能描述
+- evaluation 异步任务功能完善
+
+### 发布commit_id
+- dd799ffb96943256c4d1d5048c7efbdd3250e95c
