@@ -79,3 +79,7 @@ def create_task(task_id, task_name, user, task_type, questionnaire_num, expire_d
         "status": 0
     }
     collection.insert_one(insert_data)
+
+
+if __name__ == '__main__':
+    create_task("\"mytest1\"", "", "", "", "", "")

@@ -72,12 +72,12 @@ class FRVideoEvaluationFactory(object):
             os.remove(self.__src_video_path)
             os.remove(self.__target_video_path)
             if response.status_code == 200:
-                return json.dumps({"data": {"psnr_score": response.json()["data"]["psnr_score"]}}, ensure_ascii=False)
+                return {"psnr_score": response.json()["data"]["psnr_score"]}
             else:
                 raise RuntimeError("hassan服务返回出错")
         except Exception as e:
             self.logger.error(str(e))
-            return json.dumps({"data": {"description": "psnr检测出现错误！"}}, ensure_ascii=False)
+            raise Exception("psnr检测出现错误！{}".format(str(e)))
 
     def get_video_ssim(self):
         """
@@ -94,12 +94,12 @@ class FRVideoEvaluationFactory(object):
             os.remove(self.__src_video_path)
             os.remove(self.__target_video_path)
             if response.status_code == 200:
-                return json.dumps({"data": {"ssim_score": response.json()["data"]["ssim_score"]}}, ensure_ascii=False)
+                return {"ssim_score": response.json()["data"]["ssim_score"]}
             else:
                 raise RuntimeError("hassan服务返回出错")
         except Exception as e:
             self.logger.error(str(e))
-            return json.dumps({"data": {"description": "ssim检测出现错误！"}}, ensure_ascii=False)
+            raise Exception("ssim检测出现错误！{}".format(str(e)))
 
     def get_video_vmaf(self):
         """
@@ -116,12 +116,12 @@ class FRVideoEvaluationFactory(object):
             os.remove(self.__src_video_path)
             os.remove(self.__target_video_path)
             if response.status_code == 200:
-                return json.dumps({"data": {"vmaf_score": response.json()["data"]["vmaf_score"]}}, ensure_ascii=False)
+                return {"vmaf_score": response.json()["data"]["vmaf_score"]}
             else:
                 raise RuntimeError("hassan服务返回出错")
         except Exception as e:
             self.logger.error(str(e))
-            return json.dumps({"data": {"description": "vmaf检测出现错误！"}}, ensure_ascii=False)
+            raise Exception("vmaf检测出现错误！{}".format(str(e)))
 
 
 class NRVideoEvaluationFactory(object):
@@ -186,12 +186,12 @@ class NRVideoEvaluationFactory(object):
                 is_clear = "较清晰"
             elif avg_score >= 0.8:
                 is_clear = "清晰"
-            return json.dumps({"data": {"is_clear": is_clear, "clarity_score": avg_score}}, ensure_ascii=False)
+            return {"definition_score": avg_score}
         except Exception as e:
             self.logger.error(str(e))
-            return json.dumps({"data": {"description": "清晰度检测出现错误！"}}, ensure_ascii=False)
+            raise Exception("清晰度检测出现错误！{}".format(str(e)))
 
-    def get_video_NIQE(self):
+    def get_video_niqe(self):
         """ 获取视频niqe评分
         该功能不能传入时长过长的视频，否则会响应超时
         :return:
@@ -202,18 +202,18 @@ class NRVideoEvaluationFactory(object):
             files = [('file_input', open(self.__video_local_path, 'rb'))]
             response = requests.post(url=url, files=files)
             if response.status_code == 200:
-                return json.dumps({"data": {"niqe_score": response.json()["data"]["niqe_score"]}}, ensure_ascii=False)
+                return {"niqe_score": response.json()["data"]["niqe_score"]}
             else:
                 raise RuntimeError("hassan服务返回出错，视频时长可能过长")
         except Exception as e:
             self.logger.error(str(e))
-            return json.dumps({"data": {"description": "niqe检测出现错误！"}}, ensure_ascii=False)
+            raise Exception("niqe检测出现错误！{}".format(str(e)))
 
     def get_video_brisque(self):
         """
         :return:
         """
-        return
+        return {"niqe_score": "服务暂未接入"}
 
     def get_video_black_frame(self, black_threshold=0.999):
         """ 视频黑屏检测
@@ -390,5 +390,5 @@ if __name__ == '__main__':
     # fr = FRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
     #                               'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
     # print(fr.get_video_vmaf())
-    nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4')
+    nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/6ebfbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4')
     print(nr.get_video_blurred_frame())
