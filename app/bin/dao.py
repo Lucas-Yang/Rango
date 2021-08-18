@@ -150,11 +150,49 @@ class EvaluationDao(object):
         :return:
         """
 
+    def __search_collection_result(self, collection_name: str, search_info_dict: dict):
+        """
+        :param collection_name:
+        :param search_info_dict:
+        :return:
+        """
+        evaluation_task_result_collection = self.__mongodb_client[collection_name]
+        task_result_iter = evaluation_task_result_collection.find(search_info_dict)
+        return task_result_iter
+
     def get_task_personal_result(self, user_id):
         """ 获取该任务的自动检测结果，唯一提供的外部接口
         :return:
         """
-        evaluation_task_result_collection = self.__mongodb_client["rango_evaluation_task_result"]
-        task_result_iter = evaluation_task_result_collection.find({'user': user_id})
-        result_list = [data for data in task_result_iter]
-        return result_list
+        task_result_iter = self.__search_collection_result(
+            collection_name="rango_evaluation_task_result",
+            search_info_dict={'user': user_id}
+        )
+        task_create_iter = self.__search_collection_result(
+            collection_name="rango_evaluate_tasks",
+            search_info_dict={"user": user_id, "task_type": "evaluation"}
+        )
+        create_list = [{
+            "task_id": data["task_id"],
+            "task_name": data["task_name"],
+            "groups": data["groups"]
+        }
+            for data in task_create_iter
+        ]
+        result_list = [{
+            "task_id": data["task_id"],
+            "evaluation_result": data["task_evaluation_result"]
+        }
+            for data in task_result_iter
+        ]
+        for index, create_data in enumerate(create_list):
+            for result_data in result_list:
+                if create_data["task_id"] == result_data["task_id"]:
+                    create_data["evaluation_result"] = result_data["evaluation_result"]
+        return create_list
+
+
+if __name__ == '__main__':
+    evaluate_client = EvaluationDao()
+    personal_task_info = evaluate_client.get_task_personal_result('lukkk')
+    print(personal_task_info)

@@ -122,7 +122,7 @@ class MyMongoClient(object):
     """
 
     def __init__(self):
-        self.Mongo_client = MongoClient(config.mongo_config.get('mongodb_uri'), replicaSet="bapi")
+        self.Mongo_client = MongoClient(config.mongo_config.get('mongodb_uri'), replicaSet="bapi", connect=False)
         self.db = self.Mongo_client.mobileautotest
         self.db.authenticate(name=config.mongo_config.get('mongodb_user'),
                              password=config.mongo_config.get('mongodb_password'))

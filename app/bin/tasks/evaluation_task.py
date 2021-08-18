@@ -54,7 +54,7 @@ def evaluation_task(task_id):
                     continue
             groups_result_dict[group_id] = group_result_dict
     elif index_type == VideoEvaluationType.NR.value:
-        for group_id, video_url_list in enumerate(task_info_dict.get("groups")):
+        for group_id, video_url_list in task_info_dict.get("groups").items():
             group_result_dict = {}
             NRVideoHandler = NRVideoEvaluationFactory(src_video_url=video_url_list[0])
             for index_name in index_list:
@@ -62,7 +62,7 @@ def evaluation_task(task_id):
                     definition_res = NRVideoHandler.get_video_clarity()
                     group_result_dict[VideoEvaluationNRIndex.DEFINITION.name] = definition_res
                 elif index_name == VideoEvaluationNRIndex.NIQE.value:
-                    niqe_res = NRVideoHandler.get_video_NIQE()
+                    niqe_res = NRVideoHandler.get_video_niqe()
                     group_result_dict[VideoEvaluationNRIndex.NIQE.name] = niqe_res
                 elif index_name == VideoEvaluationNRIndex.BRISQUE.value:
                     brisque_res = NRVideoHandler.get_video_brisque()
@@ -88,7 +88,7 @@ def test_task(x, y):
 
 
 if __name__ == '__main__':
-    evaluation_task("1234")
+    evaluation_task("mytest2")
 
 
 
