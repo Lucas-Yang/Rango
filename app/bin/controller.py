@@ -151,34 +151,34 @@ async def personal_evaluate_video_task_status(token: str = Depends(oauth2_scheme
 
 
 @video_app.post('/task-file/upload', response_model=BinModelReturn, summary="单个文件上传到boss接口", tags=["bin辅助模块"])
-def evaluate_video_task_delete(task_id: str, group_id: int, video_index: int, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+def evaluate_video_task_delete(task_id: str, group_id: int, video_index: int, file: UploadFile = File(...)):
     """ 一个task粒度下，上传单个视频的接口
     :return:ss
     """
-    user_handler = UserDao()
-    user_name = user_handler.user_auth(token)
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
     file_content = io.BytesIO(file.file.read())
     insert_data = task.upload_data(file_content, task_id, group_id, video_index, file.filename)
     return BinModelReturn(code=0, msg="success", data={"file_name": file.filename, "file_address": str(insert_data)})
 
 
 @video_app.delete('/task-file/delete', response_model=BinModelReturn, summary="单个文件删除", tags=["bin辅助模块"])
-async def evaluate_video_task_delete(fid: str, token: str = Depends(oauth2_scheme)):
+async def evaluate_video_task_delete(fid: str):
     """ 一个task粒度下，删除单个视频的接口
     :return:
     """
-    user_handler = UserDao()
-    user_name = user_handler.user_auth(token)
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
     res = TaggingDao().delete_upload_file(fid=fid)
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
 @video_app.get('/get-task-id', summary="生成任务id", tags=["bin辅助模块"])
-async def get_task_task_id(token: str = Depends(oauth2_scheme)):
+async def get_task_task_id():
     session_id = f'{uuid.uuid4()}'
     """ 获取本次任务id
     :return:
     """
-    user_handler = UserDao()
-    user_name = user_handler.user_auth(token)
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
     return session_id[:12]

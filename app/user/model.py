@@ -1,11 +1,21 @@
 """ 数据定义
 """
+from enum import unique, Enum
 
 from pydantic import BaseModel
 from typing import Optional
 from app.common.data import ReturnCode
 
 # ########################## user 模块数据定义 ###########################
+
+
+@unique
+class UserRoleType(Enum):
+    """
+    """
+    ROOT = 0  # 最高权限
+    MASTER = 1  # 可以创建任务
+    COMMON = 2  # 最普通权限，只能做标注任务
 
 
 class UserLoginItem(BaseModel):
