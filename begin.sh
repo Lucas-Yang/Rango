@@ -1,7 +1,4 @@
-echo "######################"
-echo `pwd`
 run_env=$1
-echo "$run_env"
 if [ "$run_env" = "prod" ]
 then
   # shellcheck disable=SC2164
