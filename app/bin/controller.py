@@ -12,6 +12,7 @@ from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, 
 from app.bin.dao import TaggingDao, EvaluationDao
 from app.bin.tasks.evaluation_task import evaluation_task
 from app.user import oauth2_scheme
+from app.user.dao import UserDao
 
 video_app = APIRouter()
 
@@ -19,7 +20,7 @@ video_app = APIRouter()
 # ################# 标注任务接口 ##################
 
 
-@video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务")
+@video_app.post('/tagging/task', response_model=BinModelReturn, summary="创建标注任务", tags=["tagging 模块"])
 async def mos_video_task_create(item: TaggingTaskCreate):
     """ 创建标注任务接口
     :return:
@@ -29,7 +30,7 @@ async def mos_video_task_create(item: TaggingTaskCreate):
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
-@video_app.put('/tagging/task', response_model=BinModelReturn, summary="修改标注任务")
+@video_app.put('/tagging/task', response_model=BinModelReturn, summary="修改标注任务", tags=["tagging 模块"])
 async def mos_video_task_update(item: TaggingTaskUpdate):
     """ 标注任务修改
     :return:
@@ -38,16 +39,7 @@ async def mos_video_task_update(item: TaggingTaskUpdate):
     return BinModelReturn(code=0, msg="success", data={"modify_num": res})
 
 
-@video_app.get('/get-task-id')
-async def get_task_task_id():
-    session_id = f'{uuid.uuid4()}'
-    """ 获取本次任务id
-    :return:
-    """
-    return session_id[:12]
-
-
-@video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询")
+@video_app.get('/tagging/task-status', response_model=BinModelReturn, summary="用户标注任务查询", tags=["tagging 模块"])
 async def mos_video_task_status_by_user(user: str, page_num: int = 1, page_size: int = 10):
     """ 标注任务查询
     :return:
@@ -57,7 +49,7 @@ async def mos_video_task_status_by_user(user: str, page_num: int = 1, page_size:
     return BinModelReturn(code=0, msg="success", data={"task_info": res, "count": count})
 
 
-@video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除")
+@video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除", tags=["tagging 模块"])
 async def mos_video_task_delete(task_id: str):
     """ 标注任务删除
 
@@ -66,7 +58,7 @@ async def mos_video_task_delete(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
-@video_app.post('/tagging/group/score', response_model=BinModelReturn, summary="评估任务打分回收")
+@video_app.post('/tagging/group/score', response_model=BinModelReturn, summary="评估任务打分回收", tags=["tagging 模块"])
 async def moss_video_task_score(item: TaggingTaskScore):
     """
     插入标注视频分数
@@ -78,7 +70,7 @@ async def moss_video_task_score(item: TaggingTaskScore):
     return BinModelReturn(code=0, msg="success", data={"insert_info": dict(item)})
 
 
-@video_app.post('/tagging/task/user', response_model=BinModelReturn, summary="记录用户完成的task")
+@video_app.post('/tagging/task/user', response_model=BinModelReturn, summary="记录用户完成的task", tags=["tagging 模块"])
 async def moss_video_record_task_user(item: UserTaskStatus):
     """
     记录用户完成的task
@@ -88,7 +80,7 @@ async def moss_video_record_task_user(item: UserTaskStatus):
     return BinModelReturn(code=0, msg="success", data={"insert_info": item.user})
 
 
-@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="计算标注任务打分")
+@video_app.post('/tagging/task/score', response_model=BinModelReturn, summary="计算标注任务打分", tags=["tagging 模块"])
 async def moss_video_computed_task_score(task_id: str):
     """
     插入标注视频分数
@@ -99,7 +91,7 @@ async def moss_video_computed_task_score(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"insert_info": res})
 
 
-@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务")
+@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务", tags=["tagging 模块"])
 async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: int = 10):
     """
     查询对应用户已标注的task
@@ -112,12 +104,14 @@ async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: in
 # ############## 自动评估接口 ###############
 
 
-@video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建")
-async def evaluate_video_task_create(item: EvaluationTaskCreate):
+@video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建", tags=["evaluation 模块"])
+async def evaluate_video_task_create(item: EvaluationTaskCreate, token: str = Depends(oauth2_scheme)):
     """ 评估任务创建
     :return:
     """
-    task.create_task(item.task_id, item.task_name, item.user,
+    user_handler = UserDao()
+    user_name = user_handler.user_auth(token)
+    task.create_task(item.task_id, item.task_name, user_name,
                      item.task_type, item.questionnaire_num,
                      item.expire_data, task_detail=item.task_details.dict()
                      )
@@ -125,7 +119,7 @@ async def evaluate_video_task_create(item: EvaluationTaskCreate):
     return BinModelReturn(code=0, msg="success", data={"task_id": item.task_id})
 
 
-@video_app.put('/evaluation/task', response_model=BinModelReturn, summary="评估任务修改")
+@video_app.put('/evaluation/task', response_model=BinModelReturn, summary="评估任务修改", tags=["evaluation 模块"])
 async def evaluate_video_task_update():
     """ 评估任务修改
     :return:
@@ -133,7 +127,7 @@ async def evaluate_video_task_update():
     pass
 
 
-@video_app.delete('/evaluation/task', response_model=BinModelReturn, summary="评估任务删除")
+@video_app.delete('/evaluation/task', response_model=BinModelReturn, summary="评估任务删除", tags=["evaluation 模块"])
 async def evaluate_video_task_delete():
     """ 评估任务删除
     :return:
@@ -141,33 +135,50 @@ async def evaluate_video_task_delete():
     pass
 
 
-@video_app.get('/evaluation/task', response_model=BinModelReturn, summary="用户个人创建评估任务查询")
-async def personal_evaluate_video_task_status(user_id: str):
+@video_app.get('/evaluation/task', response_model=BinModelReturn, summary="用户个人创建评估任务查询", tags=["evaluation 模块"])
+async def personal_evaluate_video_task_status(token: str = Depends(oauth2_scheme)):
     """
     :return:
     """
+    user_handler = UserDao()
+    user_name = user_handler.user_auth(token)
     evaluate_client = EvaluationDao()
-    personal_task_info = evaluate_client.get_task_personal_result(user_id)
+    personal_task_info = evaluate_client.get_task_personal_result(user_name)
     return BinModelReturn(code=0, msg="success", data={"result_list": personal_task_info})
 
 
 # ################# 文件上传 ##################
 
 
-@video_app.post('/task-file/upload', response_model=BinModelReturn, summary="单个文件上传到boss接口")
-def evaluate_video_task_delete(task_id: str, group_id: int, video_index: int, file: UploadFile = File(...)):
+@video_app.post('/task-file/upload', response_model=BinModelReturn, summary="单个文件上传到boss接口", tags=["bin辅助模块"])
+def evaluate_video_task_delete(task_id: str, group_id: int, video_index: int, file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
     """ 一个task粒度下，上传单个视频的接口
     :return:ss
     """
+    user_handler = UserDao()
+    user_name = user_handler.user_auth(token)
     file_content = io.BytesIO(file.file.read())
     insert_data = task.upload_data(file_content, task_id, group_id, video_index, file.filename)
     return BinModelReturn(code=0, msg="success", data={"file_name": file.filename, "file_address": str(insert_data)})
 
 
-@video_app.delete('/task-file/delete', response_model=BinModelReturn, summary="单个文件删除")
-async def evaluate_video_task_delete(fid: str):
+@video_app.delete('/task-file/delete', response_model=BinModelReturn, summary="单个文件删除", tags=["bin辅助模块"])
+async def evaluate_video_task_delete(fid: str, token: str = Depends(oauth2_scheme)):
     """ 一个task粒度下，删除单个视频的接口
     :return:
     """
+    user_handler = UserDao()
+    user_name = user_handler.user_auth(token)
     res = TaggingDao().delete_upload_file(fid=fid)
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
+
+
+@video_app.get('/get-task-id', summary="生成任务id", tags=["bin辅助模块"])
+async def get_task_task_id(token: str = Depends(oauth2_scheme)):
+    session_id = f'{uuid.uuid4()}'
+    """ 获取本次任务id
+    :return:
+    """
+    user_handler = UserDao()
+    user_name = user_handler.user_auth(token)
+    return session_id[:12]
