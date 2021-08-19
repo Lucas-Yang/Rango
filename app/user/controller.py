@@ -3,6 +3,7 @@
 import asyncio
 
 from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
 from app.common.factory import FormatCheck
@@ -14,7 +15,7 @@ user_app = APIRouter()
 format_handler = FormatCheck()
 
 
-@user_app.post('/register', response_model=UserModelReturn, summary="用户账号注册")
+@user_app.post('/register', response_model=UserModelReturn, summary="用户账号注册", tags=["用户模块"])
 def user_register(item: UserRegisterItem):
     """
     :return:
@@ -30,7 +31,7 @@ def user_register(item: UserRegisterItem):
         return UserModelReturn(code=1, msg="input error")
 
 
-@user_app.put('/update', response_model=UserModelReturn, summary="用户信息更新，主要是root管理员调用")
+@user_app.put('/update', response_model=UserModelReturn, summary="用户信息更新，主要是root管理员调用", tags=["用户模块"])
 async def user_update(item: UserUpdateItem, token: str = Depends(oauth2_scheme)):
     """
     :return:
@@ -46,7 +47,7 @@ async def user_update(item: UserUpdateItem, token: str = Depends(oauth2_scheme))
         return UserModelReturn(code=1, msg="input error")
 
 
-@user_app.get('/status', response_model=UserModelReturn, summary="用户身份查询")
+@user_app.get('/status', response_model=UserModelReturn, summary="用户身份查询", tags=["用户模块"])
 async def user_status(token: str = Depends(oauth2_scheme)):
     """
     :return:
@@ -60,7 +61,7 @@ async def user_status(token: str = Depends(oauth2_scheme)):
         return UserModelReturn(code=2, msg="internal error", data={"info": msg})
 
 
-@user_app.get('/admin-status', summary="管理员查询其他用户状态信息接口，不对外暴露")
+@user_app.get('/admin-status', summary="管理员查询其他用户状态信息接口，不对外暴露", tags=["用户模块"])
 async def admin_search_user_status(user_id, token: str = Depends(oauth2_scheme)):
     """
     :param user_id:
@@ -84,7 +85,7 @@ async def admin_search_user_status(user_id, token: str = Depends(oauth2_scheme))
                                )
 
 
-@user_app.post('/login', response_model=UserModelReturn, summary="用户登录（会自动调用获取token的api)")
+@user_app.post('/login', response_model=UserModelReturn, summary="用户登录（会自动调用获取token的api)", tags=["用户模块"])
 async def user_login(item: UserLoginItem):
     """
     :return:
@@ -100,7 +101,20 @@ async def user_login(item: UserLoginItem):
         return UserModelReturn(code=1, msg="input error")
 
 
-@user_app.get('/test-auth', summary="测试用户认证接口")
+@user_app.post('/token', summary="swagger 获取token 非暴露给前端，前端通过login获取token", tags=["用户模块"])
+async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+    :return:
+    """
+    user_handler = UserDao({"email": form_data.username, "password": form_data.password})
+    acs_status, user_token = user_handler.user_login()
+    return {
+        "access_token": user_token,
+        "token_type": 'Bearer'
+    }
+
+
+@user_app.get('/test-auth', summary="测试用户认证接口", tags=["用户模块"])
 async def user_login(token: str = Depends(oauth2_scheme)):
     """
     :param token:
@@ -110,7 +124,7 @@ async def user_login(token: str = Depends(oauth2_scheme)):
     return user_handler.user_auth(token)
 
 
-@user_app.get('/verify/code', summary="获取验证玛")
+@user_app.get('/verify/code', summary="获取验证玛", tags=["用户模块"])
 async def get_verify_code(email):
     """
     :return
@@ -123,7 +137,7 @@ async def get_verify_code(email):
         return UserModelReturn(code=2, msg="internal error", data={"info": msg})
 
 
-@user_app.get('/ping', summary="test")
+@user_app.get('/ping', summary="test", tags=["用户模块"])
 async def test():
     """
     :return:
