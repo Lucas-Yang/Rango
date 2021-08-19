@@ -10,6 +10,7 @@ import uvicorn
 from fastapi import FastAPI
 from app.bin.controller import video_app
 from app.user.controller import user_app
+from app.common.joker import buddha
 
 app = FastAPI()
 app.include_router(video_app, prefix="/video")
@@ -24,5 +25,6 @@ if __name__ == '__main__':
         reload = False
     else:
         reload = True
+    buddha()
     uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=reload, debug=reload,
                 workers=multiprocessing.cpu_count())
