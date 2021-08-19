@@ -24,9 +24,16 @@
 ### 发布commit_id
 - dd799ffb96943256c4d1d5048c7efbdd3250e95c
 
-## 2021-08-17
+## 2021-08-18
 ### 功能描述
 - evaluation 异步任务功能完善
 
 ### 发布commit_id
-- dd799ffb96943256c4d1d5048c7efbdd3250e95c
+- cd511283f7cf12caeb77db3202dbe1c8ad4486b4
+
+## 2021-08-19
+### 功能描述
+- auth认证 & 路由tag
+
+### 发布commit_id
+- e058751caaf9d6e0f19f18270e009c1b6893c163
