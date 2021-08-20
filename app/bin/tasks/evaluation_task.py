@@ -1,6 +1,8 @@
 """
 evaluation 异步任务
 """
+import os
+
 from app.bin.tasks import celery_app
 from app.bin.utils.Evaluation import FRVideoEvaluationFactory, NRVideoEvaluationFactory
 from app.bin.model import VideoEvaluationNRIndex, VideoEvaluationFRIndex, VideoEvaluationType
@@ -35,23 +37,34 @@ def evaluation_task(task_id):
     task_user = task_info_dict.get("user", None)
     groups_result_dict = {}
     if index_type == VideoEvaluationType.FR.value:
-        for group_id, video_url_list in enumerate(task_info_dict.get("groups")):
+        for group_id, video_url_list in task_info_dict.get("groups").items():
             FRVideoHandler = FRVideoEvaluationFactory(src_video_url=video_url_list[0],
                                                       target_video_url=video_url_list[1]
                                                       )
             group_result_dict = {}
             for index_name in index_list:
                 if index_name == VideoEvaluationFRIndex.PSNR.value:
-                    psnr_res = FRVideoHandler.get_video_psnr()
+                    try:
+                        psnr_res = FRVideoHandler.get_video_psnr()
+                    except Exception as err:
+                        psnr_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationFRIndex.PSNR.name] = psnr_res
                 elif index_name == VideoEvaluationFRIndex.SSIM.value:
-                    ssim_res = FRVideoHandler.get_video_ssim()
+                    try:
+                        ssim_res = FRVideoHandler.get_video_ssim()
+                    except Exception as err:
+                        ssim_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationFRIndex.SSIM.name] = ssim_res
                 elif index_name == VideoEvaluationFRIndex.VMAF.value:
-                    vmaf_res = FRVideoHandler.get_video_vmaf()
+                    try:
+                        vmaf_res = FRVideoHandler.get_video_vmaf()
+                    except Exception as err:
+                        vmaf_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationFRIndex.VMAF.name] = vmaf_res
                 else:
                     continue
+            os.remove(FRVideoHandler.src_video_path)
+            os.remove(FRVideoHandler.target_video_path)
             groups_result_dict[group_id] = group_result_dict
     elif index_type == VideoEvaluationType.NR.value:
         for group_id, video_url_list in task_info_dict.get("groups").items():
@@ -59,22 +72,31 @@ def evaluation_task(task_id):
             NRVideoHandler = NRVideoEvaluationFactory(src_video_url=video_url_list[0])
             for index_name in index_list:
                 if index_name == VideoEvaluationNRIndex.DEFINITION.value:
-                    definition_res = NRVideoHandler.get_video_clarity()
+                    try:
+                        definition_res = NRVideoHandler.get_video_clarity()
+                    except Exception as err:
+                        definition_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationNRIndex.DEFINITION.name] = definition_res
                 elif index_name == VideoEvaluationNRIndex.NIQE.value:
-                    niqe_res = NRVideoHandler.get_video_niqe()
+                    try:
+                        niqe_res = NRVideoHandler.get_video_niqe()
+                    except Exception as err:
+                        niqe_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationNRIndex.NIQE.name] = niqe_res
                 elif index_name == VideoEvaluationNRIndex.BRISQUE.value:
-                    brisque_res = NRVideoHandler.get_video_brisque()
+                    try:
+                        brisque_res = NRVideoHandler.get_video_brisque()
+                    except Exception as err:
+                        brisque_res = {"runtime error": str(err)}
                     group_result_dict[VideoEvaluationNRIndex.BRISQUE.name] = brisque_res
                 else:
                     continue
+            os.remove(NRVideoHandler.video_local_path)
             groups_result_dict[group_id] = group_result_dict
     else:
         pass
     task_result_dict["task_evaluation_result"] = groups_result_dict
     task_result_dict["user"] = task_user
-    print(task_result_dict)
     result_collection = db["rango_evaluation_task_result"]
     result_collection.insert_one(task_result_dict)
 
@@ -88,7 +110,7 @@ def test_task(x, y):
 
 
 if __name__ == '__main__':
-    evaluation_task("mytest2")
+    evaluation_task("luka-test1")
 
 
 
