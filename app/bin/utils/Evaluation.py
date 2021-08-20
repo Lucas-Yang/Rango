@@ -21,8 +21,8 @@ class FRVideoEvaluationFactory(object):
         """
         self.__src_video_url = src_video_url
         self.__target_video_url = target_video_url
-        self.__src_video_path = self.__src_video_download()
-        self.__target_video_path = self.__target_video_download()
+        self.src_video_path = self.__src_video_download()
+        self.target_video_path = self.__target_video_download()
         self.logger = LogManager().logger
 
     def __src_video_download(self):
@@ -63,18 +63,16 @@ class FRVideoEvaluationFactory(object):
         """
         self.logger.info("Start video psnr detect...")
         try:
-            url = "http://hassan.bilibili.co/player/video/psnr1"
+            url = "http://hassan.bilibili.co/player/video/psnr"
             files = [
-                ('file_input', open(self.__src_video_path, 'rb')),
-                ('file_refer', open(self.__target_video_path, 'rb'))
+                ('file_input', open(self.src_video_path, 'rb')),
+                ('file_refer', open(self.target_video_path, 'rb'))
             ]
             response = requests.post(url=url, files=files)
-            os.remove(self.__src_video_path)
-            os.remove(self.__target_video_path)
             if response.status_code == 200:
                 return {"psnr_score": response.json()["data"]["psnr_score"]}
             else:
-                raise RuntimeError("hassan服务返回出错")
+                raise RuntimeError("http_code: {}".format(response.status_code))
         except Exception as e:
             self.logger.error(str(e))
             raise Exception("psnr检测出现错误！{}".format(str(e)))
@@ -87,16 +85,14 @@ class FRVideoEvaluationFactory(object):
         try:
             url = "http://hassan.bilibili.co/player/video/ssim"
             files = [
-                ('file_src', open(self.__src_video_path, 'rb')),
-                ('file_target', open(self.__target_video_path, 'rb'))
+                ('file_src', open(self.src_video_path, 'rb')),
+                ('file_target', open(self.target_video_path, 'rb'))
             ]
             response = requests.post(url=url, files=files)
-            os.remove(self.__src_video_path)
-            os.remove(self.__target_video_path)
             if response.status_code == 200:
                 return {"ssim_score": response.json()["data"]["ssim_score"]}
             else:
-                raise RuntimeError("hassan服务返回出错")
+                raise RuntimeError("http_code: {}".format(response.status_code))
         except Exception as e:
             self.logger.error(str(e))
             raise Exception("ssim检测出现错误！{}".format(str(e)))
@@ -109,16 +105,14 @@ class FRVideoEvaluationFactory(object):
         try:
             url = "http://hassan.bilibili.co/player/video/vmaf"
             files = [
-                ('file_input', open(self.__src_video_path, 'rb')),
-                ('file_refer', open(self.__target_video_path, 'rb'))
+                ('file_input', open(self.src_video_path, 'rb')),
+                ('file_refer', open(self.target_video_path, 'rb'))
             ]
             response = requests.post(url=url, files=files)
-            os.remove(self.__src_video_path)
-            os.remove(self.__target_video_path)
             if response.status_code == 200:
                 return {"vmaf_score": response.json()["data"]["vmaf_score"]}
             else:
-                raise RuntimeError("hassan服务返回出错")
+                raise RuntimeError("http_code: {}".format(response.status_code))
         except Exception as e:
             self.logger.error(str(e))
             raise Exception("vmaf检测出现错误！{}".format(str(e)))
@@ -132,8 +126,8 @@ class NRVideoEvaluationFactory(object):
         """
         """
         self.__video_url = src_video_url
-        self.__video_local_path = self.__video_download()
         self.index_types = index_types
+        self.video_local_path = self.__video_download()
         self.task_id = "-1"
         self.logger = LogManager().logger
 
@@ -174,7 +168,6 @@ class NRVideoEvaluationFactory(object):
                     count += 1
                 except Exception as e:
                     self.logger.error(str(e))
-            os.remove(self.__video_local_path)
             if count == 0:
                 raise RuntimeError("清晰度检测出现错误！")
             avg_score = sum_score / count
@@ -199,12 +192,12 @@ class NRVideoEvaluationFactory(object):
         try:
             self.logger.info("Start video niqe detect...")
             url = "http://hassan.bilibili.co/player/video/niqe"
-            files = [('file_input', open(self.__video_local_path, 'rb'))]
+            files = [('file_input', open(self.video_local_path, 'rb'))]
             response = requests.post(url=url, files=files)
             if response.status_code == 200:
                 return {"niqe_score": response.json()["data"]["niqe_score"]}
             else:
-                raise RuntimeError("hassan服务返回出错，视频时长可能过长")
+                raise RuntimeError("http_code: {}".format(response.status_code))
         except Exception as e:
             self.logger.error(str(e))
             raise Exception("niqe检测出现错误！{}".format(str(e)))
@@ -213,7 +206,18 @@ class NRVideoEvaluationFactory(object):
         """
         :return:
         """
-        return {"niqe_score": "服务暂未接入"}
+        try:
+            self.logger.info("Start video brisque detect...")
+            url = "http://hassan.bilibili.co/player/video/brisque"
+            files = [('file', open(self.video_local_path, 'rb'))]
+            response = requests.post(url=url, files=files)
+            if response.status_code == 200:
+                return {"brisque_score": response.json()["data"]["brisque_score"]}
+            else:
+                raise RuntimeError("http_code: {}".format(response.status_code))
+        except Exception as e:
+            self.logger.error(str(e))
+            raise Exception("brisque检测出现错误！{}".format(str(e)))
 
     def get_video_black_frame(self, black_threshold=0.999):
         """ 视频黑屏检测
@@ -225,12 +229,12 @@ class NRVideoEvaluationFactory(object):
             self.task_id = self.upload(black_threshold)
             black_frame = self.poll_for_detect()
             is_black = "是" if len(black_frame) > 0 else "否"
-            if os.path.isfile(self.__video_local_path):
-                os.remove(self.__video_local_path)
+            if os.path.isfile(self.video_local_path):
+                os.remove(self.video_local_path)
             return json.dumps({"data": {"is_black": is_black, "black_frame_info": black_frame}}, ensure_ascii=False)
         except Exception as e:
-            if os.path.isfile(self.__video_local_path):
-                os.remove(self.__video_local_path)
+            if os.path.isfile(self.video_local_path):
+                os.remove(self.video_local_path)
             self.logger.error(str(e))
             return json.dumps({"data": {"description": "黑屏检测出现错误！"}}, ensure_ascii=False)
 
@@ -241,9 +245,8 @@ class NRVideoEvaluationFactory(object):
         try:
             self.logger.info("Start silence detect...")
             url = "http://hassan.bilibili.co/player/index/silence"
-            files = [('file_src', open(self.__video_local_path, 'rb'))]
+            files = [('file_src', open(self.video_local_path, 'rb'))]
             response = RequestUtils.safe_post(url=url, files=files)
-            os.remove(self.__video_local_path)
             if response and response["code"] == 0:
                 silent_frame = response["data"]["silence_timestamps"]
                 if is_whole is False:
@@ -274,12 +277,8 @@ class NRVideoEvaluationFactory(object):
             self.task_id = self.upload()
             freeze_frame = self.poll_for_detect()
             is_freeze = "是" if len(freeze_frame) > 0 else "否"
-            if os.path.isfile(self.__video_local_path):
-                os.remove(self.__video_local_path)
             return json.dumps({"data": {"is_freeze": is_freeze, "freeze_frame_info": freeze_frame}}, ensure_ascii=False)
         except Exception as e:
-            if os.path.isfile(self.__video_local_path):
-                os.remove(self.__video_local_path)
             self.logger.error(str(e))
             return json.dumps({"data": {"description": "卡顿检测出现错误！"}}, ensure_ascii=False)
 
@@ -306,7 +305,6 @@ class NRVideoEvaluationFactory(object):
                         blurred_image_list.append(img_url)
                 except Exception as e:
                     self.logger.error(str(e))
-            os.remove(self.__video_local_path)
             del upload_boss
             return json.dumps({"data": {"blurred_image_list": blurred_image_list}}, ensure_ascii=False)
         except Exception as e:
@@ -366,7 +364,7 @@ class NRVideoEvaluationFactory(object):
         :return: 返回切帧之后的数据
         """
         image_list = []
-        vc = cv2.VideoCapture(self.__video_local_path)
+        vc = cv2.VideoCapture(self.video_local_path)
         total_frames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
         interval = total_frames / 20  # 按照一定间隔将视频20等分，切成20张图片
         for i in range(20):
@@ -391,4 +389,4 @@ if __name__ == '__main__':
     #                               'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
     # print(fr.get_video_vmaf())
     nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/6ebfbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4')
-    print(nr.get_video_blurred_frame())
+    print(nr.get_video_niqe())

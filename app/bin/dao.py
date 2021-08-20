@@ -160,6 +160,13 @@ class EvaluationDao(object):
         task_result_iter = evaluation_task_result_collection.find(search_info_dict)
         return task_result_iter
 
+    def delete_evaluation_task(self, user_id, task_id):
+        """ 删除用户评估任务
+        :return:
+        """
+        evaluation_task_collection = self.__mongodb_client["rango_evaluate_tasks"]
+        evaluation_task_collection.delete_one({"task_id": task_id, "user": user_id})
+
     def get_task_personal_result(self, user_id):
         """ 获取该任务的自动检测结果，唯一提供的外部接口
         :return:

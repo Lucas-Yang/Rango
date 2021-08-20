@@ -8,5 +8,5 @@ then
   python /data/app/rango/main.py --reload=False & /home/work/.local/bin/celery -A app.bin.tasks worker -l info
 else
   cp -r config/testconfig.py config/config.py
-  python main.py & celery -A app.bin.tasks  worker -l info
+  python main.py & celery -A app.bin.tasks  worker -l info --autoscale=25,6
 fi
