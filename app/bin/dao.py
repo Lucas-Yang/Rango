@@ -47,8 +47,8 @@ class TaggingDao(object):
 
         update = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
 
-        if query.job_name:
-            update['job_name'] = query.job_name
+        if query.task_name:
+            update['job_name'] = query.task_name
 
         if query.questionnaire_num:
             update['questionnaire_num'] = query.questionnaire_num
