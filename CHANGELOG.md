@@ -37,3 +37,10 @@
 
 ### 发布commit_id
 - e058751caaf9d6e0f19f18270e009c1b6893c163
+
+## 2021-08-20
+### 功能描述
+- fix evaluation/tagging bug
+
+### 发布commit_id
+-  555d80a406814abc5b8200604aec78ec657be244
