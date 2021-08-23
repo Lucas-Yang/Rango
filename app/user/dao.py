@@ -33,15 +33,16 @@ class UserDao(object):
         """
         try:
             user_status, user_info = self.user_status()
-            # 密码sha256加密
-            password_sha = hashlib.sha256(self.item.get("password").encode('utf-8')).hexdigest()
-
-            v_code = self.__redis_handle.get_data(self.item.get("email", ""))
-            if v_code is None or self.item.get("vcode") != v_code:
-                return False, "verification code wrong or expired"
             if not user_status:
+                # 密码sha256加密
+                password_sha = hashlib.sha256(self.item.get("password").encode('utf-8')).hexdigest()
+
+                v_code = self.__redis_handle.get_data(self.item.get("email", ""))
+                if v_code is None or self.item.get("vcode") != v_code:
+                    return False, "verification code wrong or expired"
+
                 if self.item.get("email", "").endswith("bilibili.com"):
-                    user_role = "'master'"
+                    user_role = "'common'"  # 所有身份都是common
                 else:
                     user_role = "'common'"
                 sql = "INSERT INTO rango_user(u_email, u_password, role, u_status) VALUES ({}, {}, {}, 1)". \
