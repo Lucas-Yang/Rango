@@ -1,8 +1,6 @@
 # /usr/bin/env python
 # -*- coding: utf-8 -*-
-import asyncio
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Cookie
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.user.model import UserLoginItem, UserRegisterItem, UserUpdateItem, UserModelReturn
