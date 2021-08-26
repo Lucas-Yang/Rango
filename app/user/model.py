@@ -41,7 +41,7 @@ class UserRegisterItem(BaseModel):
     """
     email: str
     password: str
-    vcode: str
+    # vcode: str
 
 
 class UserUpdateItem(BaseModel):
@@ -64,6 +64,7 @@ class UserModelReturn(BaseModel):
     code: ReturnCode
     msg: str
     data: Optional[dict]
+
 
 # ########################## user jwt ###########################
 
