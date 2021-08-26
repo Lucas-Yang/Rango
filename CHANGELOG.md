@@ -59,3 +59,9 @@
 ### 发布commit_id
 -  871979c60bf7914761f4001bf1fc0b9af05ba340
 
+## 2021-08-26
+### 功能描述
+- group-info 查询
+
+### 发布commit_id
+-  98a68eb07e6fd729ef84d4d2d40896dd88b42e18
