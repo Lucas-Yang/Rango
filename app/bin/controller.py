@@ -153,18 +153,7 @@ async def personal_evaluate_video_task_status(user: str):
     user：用户名 前端从cookie中获取
 
     :return example:
-
-    {"code":0,"msg":"success","data":{"result_list":[{"task_id":"luka-test","task_name":"2021-08-20 测试1",
-    "groups":{"1":["http://uat-boss.bilibili.co/ep_misc/fe3ebc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4"]},
-    "evaluation_result":{"1":{"DEFINITION":{"definition_score":2.4343496175754926},
-    "NIQE":{"runtime error":"niqe检测出现错误！http_code: 504"},
-    "BRISQUE":{"brisque_score":"45.704905702871535"}}}},
-    {"task_id":"1111111","task_name":"2021-08-20 测试1","groups":{},
-    "evaluation_result":{}},{"task_id":"luka-test1","task_name":"2021-08-20 测试1",
-    "groups":{"1":["http://uat-boss.bilibili.co/ep_misc/15d2bc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4",
-    "http://uat-boss.bilibili.co/ep_misc/19ccbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4"]},
-    "evaluation_result":{"1":{"SSIM":{"ssim_score":1.0},
-    "PSNR":{"psnr_score":"inf"},"VMAF":{"vmaf_score":"97.718113"}}}}]}}
+    直接查询： luoyadong@bilibili.com 查看具体的返回格式
     """
     # user_handler = UserDao()
     # user_name = user_handler.user_auth(token)
