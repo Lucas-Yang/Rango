@@ -6,7 +6,7 @@ import io
 from pymongo.errors import DuplicateKeyError
 
 import app.bin.tasks.common_task as task
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, File, Depends, Cookie
 from typing import Optional
 
 from app.bin.model import BinModelReturn, TaggingTaskCreate, TaggingTaskStatus, \
@@ -108,14 +108,14 @@ async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: in
 
 
 @video_app.post('/evaluation/task', response_model=BinModelReturn, summary="评估任务创建", tags=["evaluation 模块"])
-async def evaluate_video_task_create(item: EvaluationTaskCreate, token: str = Depends(oauth2_scheme)):
+async def evaluate_video_task_create(item: EvaluationTaskCreate):
     """ 评估任务创建
     :return:
     """
-    user_handler = UserDao()
-    user_name = user_handler.user_auth(token)
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
     try:
-        task.create_task(item.task_id, item.task_name, user_name,
+        task.create_task(item.task_id, item.task_name, item.user,
                          item.task_type, item.questionnaire_num,
                          item.expire_data, task_detail=item.task_details.dict()
                          )
@@ -146,14 +146,30 @@ async def evaluate_video_task_delete(task_id: str, token: str = Depends(oauth2_s
 
 
 @video_app.get('/evaluation/task', response_model=BinModelReturn, summary="用户个人创建评估任务查询", tags=["evaluation 模块"])
-async def personal_evaluate_video_task_status(token: str = Depends(oauth2_scheme)):
+async def personal_evaluate_video_task_status(user: str):
     """
-    :return:
+    :param:
+
+    user：用户名 前端从cookie中获取
+
+    :return example:
+
+    {"code":0,"msg":"success","data":{"result_list":[{"task_id":"luka-test","task_name":"2021-08-20 测试1",
+    "groups":{"1":["http://uat-boss.bilibili.co/ep_misc/fe3ebc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4"]},
+    "evaluation_result":{"1":{"DEFINITION":{"definition_score":2.4343496175754926},
+    "NIQE":{"runtime error":"niqe检测出现错误！http_code: 504"},
+    "BRISQUE":{"brisque_score":"45.704905702871535"}}}},
+    {"task_id":"1111111","task_name":"2021-08-20 测试1","groups":{},
+    "evaluation_result":{}},{"task_id":"luka-test1","task_name":"2021-08-20 测试1",
+    "groups":{"1":["http://uat-boss.bilibili.co/ep_misc/15d2bc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4",
+    "http://uat-boss.bilibili.co/ep_misc/19ccbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4"]},
+    "evaluation_result":{"1":{"SSIM":{"ssim_score":1.0},
+    "PSNR":{"psnr_score":"inf"},"VMAF":{"vmaf_score":"97.718113"}}}}]}}
     """
-    user_handler = UserDao()
-    user_name = user_handler.user_auth(token)
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
     evaluate_client = EvaluationDao()
-    personal_task_info = evaluate_client.get_task_personal_result(user_name)
+    personal_task_info = evaluate_client.get_task_personal_result(user)
     return BinModelReturn(code=0, msg="success", data={"result_list": personal_task_info})
 
 
