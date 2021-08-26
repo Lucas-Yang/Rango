@@ -51,6 +51,15 @@ async def mos_video_task_status_by_user(user: str, page_num: int = 1, page_size:
     res, count = TaggingDao().query_tagging_task_by_user(user=user, skip=page_num, limit_num=page_size)
     return BinModelReturn(code=0, msg="success", data={"task_info": res, "count": count})
 
+@video_app.get('/tagging/task-group-info', response_model=BinModelReturn, summary="查询task对应group的url", tags=["tagging 模块"])
+async def mos_video_task_task_group_info(task_id: str, index:int = 1):
+    """ 标注任务查询
+    :return:
+    """
+
+    res = TaggingDao().query_tagging_task_by_index(task_id=task_id, index=index)
+    return BinModelReturn(code=0, msg="success", data={"groups_info": res })
+
 
 @video_app.delete('/tagging/task', response_model=BinModelReturn, summary="标注任务删除", tags=["tagging 模块"])
 async def mos_video_task_delete(task_id: str):
@@ -197,3 +206,4 @@ async def get_task_task_id():
     # user_name = user_handler.user_auth(token)
     session_id = f'{uuid.uuid4()}'
     return BinModelReturn(code=0, msg="success", data={"task_id": session_id[:12]})
+
