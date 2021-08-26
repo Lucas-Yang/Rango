@@ -27,8 +27,7 @@ class TaggingDao(object):
         task_col = self.db['rango_evaluate_tasks']
         res = task_col.find_one({'task_id': task_id}, {'groups': 1})
         res = res.get('groups')
-        print(res)
-        res = res.get(str(index)) if res.get(str(index)) else ""
+        res = res.get(str(index)) if res.get(str(index)) else []
         return res
 
     def query_tagging_task_by_user(self, user, skip, limit_num):
