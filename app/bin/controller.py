@@ -197,7 +197,7 @@ async def evaluate_video_task_delete(fid: str):
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
-@video_app.get('/get-task-id', summary="生成任务id", tags=["bin辅助模块"])
+@video_app.get('/get-task-id', response_model=BinModelReturn, summary="生成任务id", tags=["bin辅助模块"])
 async def get_task_task_id():
     """ 获取本次任务id
     :return:
