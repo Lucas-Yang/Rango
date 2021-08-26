@@ -15,7 +15,7 @@ user_app = APIRouter()
 format_handler = FormatCheck()
 
 
-@user_app.post('/register', response_model=UserModelReturn, summary="用户账号注册", tags=["用户模块"])
+@user_app.post('/register', response_model=UserModelReturn, summary="用户账号注册", tags=["用户模块"], include_in_schema=False)
 def user_register(item: UserRegisterItem):
     """
     :param
@@ -68,11 +68,22 @@ async def user_status(user: str):
 
     {"code":0,"msg":"success","data":{"data":{"email":"xxx","role":"common","status":1}}}
     """
-    user_handler = UserDao()
+    user_handler = UserDao({"email": user, "password": "admin"})
     # user_email = user_handler.user_auth(token)
     reg_status, msg = user_handler.admin_user_status(user)
     if reg_status:
         return UserModelReturn(code=0, msg="success", data={"data": msg})
+    elif msg == "用户未注册":
+        reg_status, msg = user_handler.user_register()
+        if reg_status:
+            return UserModelReturn(code=0, msg="success", data={"data": {"email": user,
+                                                                         "role": "common",
+                                                                         "status": 1
+                                                                         }
+                                                                }
+                                   )
+        else:
+            return UserModelReturn(code=2, msg="internal error", data={"info": msg})
     else:
         return UserModelReturn(code=2, msg="internal error", data={"info": msg})
 
