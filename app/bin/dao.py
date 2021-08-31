@@ -76,6 +76,11 @@ class TaggingDao(object):
         res = file_col.delete_one({'fid': fid})
         return res.deleted_count
 
+    def query_upload_file_by_task_id(self, task_id):
+        file_col = self.db['rango_task_files']
+        res = list(file_col.find({'task_id': task_id}, {'_id': 0}).sort([("group_id", -1)]))
+        return res
+
     def collect_video_task_score(self, score_info: dict):
         score_col = self.db['rango_tagging_score']
         res = score_col.insert_one(score_info)

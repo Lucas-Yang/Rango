@@ -198,6 +198,16 @@ async def evaluate_video_task_delete(fid: str):
     return BinModelReturn(code=0, msg="success", data={"task_delete_info": res})
 
 
+@video_app.get('/task-file/groups', response_model=BinModelReturn, summary="查询group的filelist", tags=["bin辅助模块"])
+async def evaluate_video_task_query(task_id: str):
+    """ 一个task粒度下，删除单个视频的接口
+    :return:
+    """
+    # user_handler = UserDao()
+    # user_name = user_handler.user_auth(token)
+    res = TaggingDao().query_upload_file_by_task_id(task_id=task_id)
+    return BinModelReturn(code=0, msg="success", data={"task_groups_info": res})
+
 @video_app.get('/get-task-id', response_model=BinModelReturn, summary="生成任务id", tags=["bin辅助模块"])
 async def get_task_task_id():
     """ 获取本次任务id
