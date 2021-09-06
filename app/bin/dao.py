@@ -87,9 +87,12 @@ class TaggingDao(object):
         return res
 
     def record_tagging_task_user(self, tasks_info: dict):
+        task_col = self.db['rango_evaluate_tasks']
+        task_name = task_col.find_one({'task_id': tasks_info['task_id']}, {'task_name': 1})
+
         score_col = self.db['rango_tagging_users']
         select = {'task_id': tasks_info['task_id'], 'user': tasks_info['user']}
-        update_set = {"$set": {'task_id': tasks_info['task_id'],
+        update_set = {"$set": {'task_id': tasks_info['task_id'],'task_name':task_name,
                                'user': tasks_info['user'], 'status': tasks_info['status'],
                                'created_at': time.strftime("%Y-%m-%d %H:%M:%S")}}
         res = score_col.update_one(select, update_set, upsert=True)
