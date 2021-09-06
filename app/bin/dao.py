@@ -51,8 +51,9 @@ class TaggingDao(object):
 
     def modify_tagging_task(self, query: model.TaggingTaskUpdate):
         task_col = self.db['rango_evaluate_tasks']
-
+        user_col = self.db['rango_tagging_users']
         update = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
+        update_users = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
 
         if query.task_name:
             update['job_name'] = query.task_name
@@ -62,13 +63,19 @@ class TaggingDao(object):
 
         if query.expire_data:
             update['expire_data'] = query.expire_data
+            update_users['expire_data'] = query.expire_data
 
         if query.status:
             update['status'] = query.status
+            update_users['status'] = query.status
+
         select = {'task_id': query.task_id}
         update = {"$set": update}
+        update_users = {"$set": update_users}
 
         res = task_col.update_one(select, update)
+        res2 = user_col.update_one(select, update_users)
+
         return res.modified_count
 
     def delete_upload_file(self, fid):
