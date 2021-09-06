@@ -2,7 +2,7 @@ import app.bin.model as model
 from app.common.db import MyMongoClient
 from app.common import mongodb_client
 import time
-
+from datetime import datetime
 # from app.bin.utils.Evaluation import FRVideoEvaluationFactory
 # from app.bin.utils.Evaluation import NRVideoEvaluationFactory
 """ 为接口生产数据
@@ -23,7 +23,7 @@ class TaggingDao(object):
         res = task_col.find_one({'task_id': task_id}, {'_id': 0})
         return res
 
-    def query_tagging_task_by_index(self, task_id,index):
+    def query_tagging_task_by_index(self, task_id, index):
         task_col = self.db['rango_evaluate_tasks']
         res = task_col.find_one({'task_id': task_id}, {'groups': 1})
         res = res.get('groups')
@@ -51,8 +51,9 @@ class TaggingDao(object):
 
     def modify_tagging_task(self, query: model.TaggingTaskUpdate):
         task_col = self.db['rango_evaluate_tasks']
-
+        user_col = self.db['rango_tagging_users']
         update = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
+        update_users = {'updated_at': time.strftime("%Y-%m-%d %H:%M:%S")}
 
         if query.task_name:
             update['job_name'] = query.task_name
@@ -62,13 +63,19 @@ class TaggingDao(object):
 
         if query.expire_data:
             update['expire_data'] = query.expire_data
+            update_users['expire_data'] = query.expire_data
 
         if query.status:
             update['status'] = query.status
+            update_users['status'] = query.status
+
         select = {'task_id': query.task_id}
         update = {"$set": update}
+        update_users = {"$set": update_users}
 
         res = task_col.update_one(select, update)
+        res2 = user_col.update_one(select, update_users)
+
         return res.modified_count
 
     def delete_upload_file(self, fid):
@@ -87,9 +94,14 @@ class TaggingDao(object):
         return res
 
     def record_tagging_task_user(self, tasks_info: dict):
+        task_col = self.db['rango_evaluate_tasks']
+        task_info = task_col.find_one({'task_id': tasks_info['task_id']},
+                                      {'task_name': 1, 'expire_data': 1})
+        print('task_info',task_info)
         score_col = self.db['rango_tagging_users']
         select = {'task_id': tasks_info['task_id'], 'user': tasks_info['user']}
-        update_set = {"$set": {'task_id': tasks_info['task_id'],
+        update_set = {"$set": {'task_id': tasks_info['task_id'], 'task_name': task_info['task_name'],
+                               'expire_data': task_info['expire_data'].strftime("%Y-%m-%d %H:%M:%S"),
                                'user': tasks_info['user'], 'status': tasks_info['status'],
                                'created_at': time.strftime("%Y-%m-%d %H:%M:%S")}}
         res = score_col.update_one(select, update_set, upsert=True)
