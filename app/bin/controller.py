@@ -104,7 +104,7 @@ async def moss_video_computed_task_score(task_id: str):
     return BinModelReturn(code=0, msg="success", data={"insert_info": res})
 
 
-@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务", tags=["tagging 模块"])
+@video_app.get('/tagging/task/score/user', response_model=BinModelReturn, summary="用户已标记的任务", tags=["tagging 模块"])
 async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: int = 10):
     """
     查询对应用户已标注的task
@@ -113,7 +113,14 @@ async def moss_video_query_user_task(user: str, page_num: int = 1, page_size: in
     res, count = TaggingDao().video_query_user_task(user, page_num, page_size)
     return BinModelReturn(code=0, msg="success", data={"data": res, "count": count})
 
-
+@video_app.get('/tagging/task/score', response_model=BinModelReturn, summary="用户已标记的任务", tags=["tagging 模块"])
+async def video_query_task_score(task_id: str):
+    """
+    查询对应用户已标注的task
+    :return:
+    """
+    res = TaggingDao().video_query_task_score(task_id)
+    return BinModelReturn(code=0, msg="success", data={"data": res})
 # ############## 自动评估接口 ###############
 
 
