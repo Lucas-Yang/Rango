@@ -79,6 +79,18 @@ def create_task(task_id, task_name, user, task_type, questionnaire_num, expire_d
         "status": 0
     }
     collection.insert_one(insert_data)
+    user_col = db['rango_tagging_users']
+    insert_user_data = {
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "task_id": task_id,
+        "task_name": task_name,
+        "task_type": task_type,
+        "user": user,
+        "questionnaire_num": questionnaire_num,
+        "expire_data": expire_date,
+        "status": 0
+    }
+    user_col.insert_one(insert_user_data)
 
 
 if __name__ == '__main__':
