@@ -23,8 +23,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.reload:
         reload = False
+        worker = 2
     else:
         reload = True
+        worker = 1
     buddha()
     uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=reload, debug=reload,
-                workers=multiprocessing.cpu_count())
+                workers=worker)
