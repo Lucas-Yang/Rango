@@ -40,10 +40,12 @@ class MySQLClient(object):
                                   db=self.database, charset='utf8'
                                   )
 
+    """
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(MySQLClient, cls).__new__(cls)
         return cls.instance
+    """
 
     def insert_db(self, sql: str):
         """数据插入
