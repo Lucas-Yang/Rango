@@ -56,7 +56,7 @@ async def user_update(item: UserUpdateItem, token: str = Depends(oauth2_scheme))
 
 
 @user_app.get('/status', response_model=UserModelReturn, summary="用户身份查询", tags=["用户模块"])
-async def user_status(user: str):
+def user_status(user: str):
     """
     :param
 
@@ -89,7 +89,7 @@ async def user_status(user: str):
 
 
 @user_app.get('/admin-status', summary="管理员查询其他用户状态信息接口，不对外暴露", tags=["用户模块"])
-async def admin_search_user_status(user_id, token: str = Depends(oauth2_scheme)):
+def admin_search_user_status(user_id, token: str = Depends(oauth2_scheme)):
     """
     :param user_id:
     :param token:
@@ -114,7 +114,7 @@ async def admin_search_user_status(user_id, token: str = Depends(oauth2_scheme))
 
 @user_app.post('/login', response_model=UserModelReturn, summary="用户登录（会自动调用获取token的api)", tags=["用户模块"],
                include_in_schema=False)
-async def user_login(item: UserLoginItem):
+def user_login(item: UserLoginItem):
     """
     :return:
     """
@@ -130,7 +130,7 @@ async def user_login(item: UserLoginItem):
 
 
 @user_app.post('/token', summary="swagger 获取token 非暴露给前端，前端通过login获取token", tags=["用户模块"], include_in_schema=False)
-async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
+def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     :return:
     """
@@ -143,7 +143,7 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @user_app.get('/test-auth', summary="测试用户认证接口", tags=["用户模块"], include_in_schema=False)
-async def user_login(token: str = Depends(oauth2_scheme)):
+def user_login(token: str = Depends(oauth2_scheme)):
     """
     :param token:
     :return:
@@ -153,7 +153,7 @@ async def user_login(token: str = Depends(oauth2_scheme)):
 
 
 @user_app.get('/verify/code', summary="获取验证玛", tags=["用户模块"], include_in_schema=False)
-async def get_verify_code(email):
+def get_verify_code(email):
     """
     :return
     """
