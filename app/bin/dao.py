@@ -39,6 +39,8 @@ class TaggingDao(object):
         task_col = self.db['rango_evaluate_tasks']
         if user == 'all':
             user = {'$regex': '.*'}
+        if not user:
+            user = {'$regex': '.*'}
         skip = (skip - 1) * limit_num
         count = len(list(task_col.find({'user': user,'task_type':'tagging','status':0})))
         res = list(task_col.find({'user': user,'task_type':'tagging','status':0}, {'_id': 0}).sort([("created_at", -1)]).skip(skip).limit(limit_num))
