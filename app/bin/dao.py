@@ -37,9 +37,10 @@ class TaggingDao(object):
         :return:
         """
         task_col = self.db['rango_evaluate_tasks']
-        if user == 'all':
-            user = {'$regex': '.*'}
+
         if not user:
+            user = {'$regex': '.*'}
+        if user == 'all':
             user = {'$regex': '.*'}
         skip = (skip - 1) * limit_num
         count = len(list(task_col.find({'user': user,'task_type':'tagging','status':0})))
