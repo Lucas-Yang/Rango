@@ -93,3 +93,11 @@
 
 ### 发布commit_id
 - a16a2273bccb7fa1f66de03a25885cc5f00e1d9e
+
+
+## 2021-09-08
+### 功能描述
+- master 可修改任务展示状态
+
+### 发布commit_id
+- 8f0662f7899c6cbfe7213b06d058327811d2bbf8
