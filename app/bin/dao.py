@@ -40,8 +40,8 @@ class TaggingDao(object):
         if user == 'all':
             user = {'$regex': '.*'}
         skip = (skip - 1) * limit_num
-        count = len(list(task_col.find({'user': user,'task_type':'tagging'})))
-        res = list(task_col.find({'user': user,'task_type':'tagging'}, {'_id': 0}).sort([("created_at", -1)]).skip(skip).limit(limit_num))
+        count = len(list(task_col.find({'user': user,'task_type':'tagging','status':0})))
+        res = list(task_col.find({'user': user,'task_type':'tagging','status':0}, {'_id': 0}).sort([("created_at", -1)]).skip(skip).limit(limit_num))
         return res, count
 
     def delete_tagging_task(self, task_id):
