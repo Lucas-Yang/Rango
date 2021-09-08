@@ -86,3 +86,10 @@
 
 ### 发布commit_id
 - fd442e268067aee62a44d6491ac3323d4676960b
+
+## 2021-09-08
+### 功能描述
+- 任务大厅查询接口过滤掉 "evaluation" 任务
+
+### 发布commit_id
+- a16a2273bccb7fa1f66de03a25885cc5f00e1d9e
