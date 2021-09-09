@@ -108,3 +108,10 @@
 
 ### 发布commit_id
 - 79ee9d7eaf8bdf8802e734091eeb6deb51dc81a6
+
+## 2021-09-09
+### 功能描述
+- evaluation 结果查询新增index_type字段
+
+### 发布commit_id
+- 878985efc66a6f27ac00f2922d08b4ef8b34baf8
