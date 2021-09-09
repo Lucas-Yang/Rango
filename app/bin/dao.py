@@ -209,6 +209,7 @@ class EvaluationDao(object):
         create_list = [{
             "task_id": data["task_id"],
             "task_name": data["task_name"],
+            "index_type": data.get("task_detail", {"index_type": 2}).get("index_type"),
             "groups": data["groups"]
         }
             for data in task_create_iter
