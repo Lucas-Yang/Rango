@@ -18,10 +18,15 @@ def upload_data(obj, task_id, group_id, video_index, file_name):
     collection = db['rango_task_files']
     fid = f'{uuid.uuid4()}'
     logging.info(fid)
+    selet_field = {'task_id': task_id, 'group_id': group_id, 'video_index': video_index}
+    find_file = list(collection.find(selet_field))
 
     # insert mongo
     insert_data = {'task_id': task_id, 'group_id': group_id, 'video_index': video_index, 'fid': fid,
                    'file_name': file_name, 'status': 0}
+    if find_file:
+        print(find_file)
+        return insert_data
     collection.insert_one(insert_data)
     del insert_data['_id']
     # upload
