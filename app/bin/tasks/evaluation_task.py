@@ -35,6 +35,7 @@ def evaluation_task(task_id):
     index_type = task_info_dict.get("task_detail", {}).get("index_type", None)
     index_list = task_info_dict.get("task_detail", {}).get("index", None)
     task_user = task_info_dict.get("user", None)
+    task_result_dict["index_type"] = index_type
     groups_result_dict = {}
     if index_type == VideoEvaluationType.FR.value:
         for group_id, video_url_list in task_info_dict.get("groups").items():
