@@ -240,7 +240,7 @@ class RedisClient(object):
 if __name__ == "__main__":
     redis_client = RedisClient()
     t1 = time.time()
-    redis_client.create_verification_code("luoyadong@bilibili.com")
+    redis_client.create_verification_code("xxx@xxx.com")
     print(time.time() - t1)
-    print(redis_client.async_create_verification_code("luoyadong@bilibili.com"))
+    print(redis_client.async_create_verification_code("xxx@xxx.com"))
     print(time.time() - t1)

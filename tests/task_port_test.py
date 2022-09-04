@@ -30,7 +30,7 @@ class TestProject(object):
         data_json = {
             "task_id": task_id,
             "job_name": "jz_test",
-            "user": "jiangzheng@bilibili.com",
+            "user": "aaa@xxx.com",
             "job_type": "tagging",
             "questionnaire_num": 100
         }
@@ -45,7 +45,7 @@ class TestProject(object):
         data_json = {
             "task_id": task_id,
             "job_name": "jz_test_update",
-            "user": "jiangzheng@bilibili.com",
+            "user": "aaa@xxx.com",
             "job_type": "tagging",
             "questionnaire_num": 50
         }
@@ -69,7 +69,7 @@ class TestProject(object):
     def test_query_task_by_user(self):
         url = "http://localhost:8000/video/tagging/task-status"
         data_json = {
-            "user": "jiangzheng@bilibili.com"
+            "user": "aaa@xxx.com"
         }
         response = requests.get(url=url, params=data_json)
         assert response.status_code == 200
@@ -102,7 +102,7 @@ class TestProject(object):
             "task_id": task_id,
             "group_id": 1,
             "scores": [5],
-            "user": "jiangzheng@bilibili.com"
+            "user": "aaa@xxx.com"
         }
         response = requests.post(url=url, json=data_json)
         assert response.status_code == 200
@@ -115,13 +115,13 @@ class TestProject(object):
         data_json = {
             "task_id": task_id,
             "status": "do",
-            "user": "jiangzheng@bilibili.com"
+            "user": "aaa@xxx.com"
         }
         response = requests.post(url=url, json=data_json)
         assert response.status_code == 200
         assert response.json()['code'] == 0
         assert response.json()['msg'] == 'success'
-        assert response.json()['data']['insert_info'] == "jiangzheng@bilibili.com"
+        assert response.json()['data']['insert_info'] == "aaa@xxx.com"
 
     def test_compute_task_score(self):
         url = "http://localhost:8000/video/tagging/task/score"
@@ -137,7 +137,7 @@ class TestProject(object):
     def test_query_task_score(self):
         url = "http://localhost:8000/video/tagging/task/score"
         data_json = {
-            "user": "jiangzheng@bilibili.com"
+            "user": "aaa@xxx.com"
         }
         response = requests.get(url=url, params=data_json)
         assert response.status_code == 200

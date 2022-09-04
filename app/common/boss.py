@@ -11,7 +11,7 @@ class Boss:
         self.expiration = 60 * 60 * 24 * 7
         self.aws_access_key_id = 'd55d2ce2574c322f'
         self.aws_secret_access_key = 'c61bec6abfb843b8e0e7129af62256ed'
-        self.endpoint_url = 'http://uat-boss.bilibili.co'
+        self.endpoint_url = 'http://bat-boss.xxx.co'
 
         self.my_config = Config(
             region_name='uat',

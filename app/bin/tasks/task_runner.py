@@ -11,11 +11,11 @@ def task_consumer():
     """
     :return:
     """
-    sub_rc = Redis(host='uat-shylf-databus.bilibili.co',
+    sub_rc = Redis(host='bat-shylf-databus.xxx.co',
                    port=6205,
                    auth='0e3f30683b9a83d9:'
                         '9d1250ee4970455c3f66b97947d2f42e@'
-                        'RangoJob-Uat-TestEp-S/topic=RangoJob-Uat-T&role=sub'
+                        'RangoJob-bat-TestEp-S/topic=RangoJob-bat-T&role=sub'
                    )
     while True:
         items = sub_rc.get(20)

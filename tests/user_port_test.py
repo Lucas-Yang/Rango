@@ -9,7 +9,7 @@ import requests
 from app.common.db import RedisClient
 
 Token = ''
-test_email = "luoyadong@bilibili.com"
+test_email = "xxx@xxx.com"
 password = "admin"
 
 

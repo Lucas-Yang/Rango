@@ -170,7 +170,7 @@ async def personal_evaluate_video_task_status(user: str):
     user：用户名 前端从cookie中获取
 
     :return example:
-    直接查询： luoyadong@bilibili.com 查看具体的返回格式
+    直接查询： xxx@xxx.com 查看具体的返回格式
     """
     # user_handler = UserDao()
     # user_name = user_handler.user_auth(token)

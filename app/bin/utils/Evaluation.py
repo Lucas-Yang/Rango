@@ -63,7 +63,7 @@ class FRVideoEvaluationFactory(object):
         """
         self.logger.info("Start video psnr detect...")
         try:
-            url = "http://hassan.bilibili.co/player/video/psnr"
+            url = "http://xxx/player/video/psnr"
             files = [
                 ('file_input', open(self.src_video_path, 'rb')),
                 ('file_refer', open(self.target_video_path, 'rb'))
@@ -83,7 +83,7 @@ class FRVideoEvaluationFactory(object):
         """
         self.logger.info("Start video ssim detect...")
         try:
-            url = "http://hassan.bilibili.co/player/video/ssim"
+            url = "http://xxx/player/video/ssim"
             files = [
                 ('file_src', open(self.src_video_path, 'rb')),
                 ('file_target', open(self.target_video_path, 'rb'))
@@ -103,7 +103,7 @@ class FRVideoEvaluationFactory(object):
         """
         self.logger.info("Start video vmaf detect...")
         try:
-            url = "http://hassan.bilibili.co/player/video/vmaf"
+            url = "http://xxx/player/video/vmaf"
             files = [
                 ('file_input', open(self.src_video_path, 'rb')),
                 ('file_refer', open(self.target_video_path, 'rb'))
@@ -155,7 +155,7 @@ class NRVideoEvaluationFactory(object):
             self.logger.info("Start clarity debug...")
             # 将视频切帧
             img_list = self.video2frame()
-            url = "http://hassan.bilibili.co/image/quality/clarity-detect"
+            url = "http://xxx/image/quality/clarity-detect"
             count = 0
             sum_score = 0
             for i in range(len(img_list)):
@@ -191,7 +191,7 @@ class NRVideoEvaluationFactory(object):
         """
         try:
             self.logger.info("Start video niqe detect...")
-            url = "http://hassan.bilibili.co/player/video/niqe"
+            url = "http://xxx/player/video/niqe"
             files = [('file_input', open(self.video_local_path, 'rb'))]
             response = requests.post(url=url, files=files)
             if response.status_code == 200:
@@ -208,7 +208,7 @@ class NRVideoEvaluationFactory(object):
         """
         try:
             self.logger.info("Start video brisque detect...")
-            url = "http://hassan.bilibili.co/player/video/brisque"
+            url = "http://xxx/player/video/brisque"
             files = [('file', open(self.video_local_path, 'rb'))]
             response = requests.post(url=url, files=files)
             if response.status_code == 200:
@@ -244,7 +244,7 @@ class NRVideoEvaluationFactory(object):
         """
         try:
             self.logger.info("Start silence detect...")
-            url = "http://hassan.bilibili.co/player/index/silence"
+            url = "http://xxx/player/index/silence"
             files = [('file_src', open(self.video_local_path, 'rb'))]
             response = RequestUtils.safe_post(url=url, files=files)
             if response and response["code"] == 0:
@@ -292,7 +292,7 @@ class NRVideoEvaluationFactory(object):
             self.logger.info("Start blurred debug...")
             # 将视频切帧
             img_list = self.video2frame()
-            url = "http://hassan.bilibili.co/image/quality/blurred-detect"
+            url = "http://xxx/image/quality/blurred-detect"
             for i in range(len(img_list)):
                 try:
                     success, encoded_image = cv2.imencode('.jpg', img_list[i])  # 对数组的图片格式进行编码
@@ -316,7 +316,7 @@ class NRVideoEvaluationFactory(object):
         upload video
         """
         self.logger.info("Start uploading video...")
-        url = "http://hassan.bilibili.co/player/video/upload"
+        url = "http://xxx/player/video/upload"
         payload = {
             'index_types': self.index_types,
             'black_threshold': black_threshold
@@ -342,7 +342,7 @@ class NRVideoEvaluationFactory(object):
         while True:
             ctr += 1
             self.logger.info("Request for %d times..." % ctr)
-            url = "http://hassan.bilibili.co/player/index/cv?task_id=%s" % self.task_id
+            url = "http://xxx/player/index/cv?task_id=%s" % self.task_id
             response = RequestUtils.safe_get(url=url)
 
             self.logger.info("==debug-response:self.task_id:{0}==response:{1}".format(self.task_id, response))
@@ -385,8 +385,8 @@ class NRVideoEvaluationFactory(object):
 
 
 if __name__ == '__main__':
-    # fr = FRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
-    #                               'http://uat-boss.bilibili.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
+    # fr = FRVideoEvaluationFactory('http://bat-boss.xxx.co/ep_misc/4948b955c724f3b4aa153bd5c83836d29da4d48c.mp4',
+    #                               'http://bat-boss.xxx.co/ep_misc/c0bb1c645dfae20e874a409432efaec6788f6bf2.mp4')
     # print(fr.get_video_vmaf())
-    nr = NRVideoEvaluationFactory('http://uat-boss.bilibili.co/ep_misc/6ebfbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4')
+    nr = NRVideoEvaluationFactory('http://bat-boss.xxx.co/ep_misc/6ebfbc3b975cb05b349b85917c7f92616ce0ca9b2f38.mp4')
     print(nr.get_video_niqe())

@@ -40,7 +40,7 @@ class UserDao(object):
                 # if v_code is None or self.item.get("vcode") != v_code:
                 #     return False, "verification code wrong or expired"
 
-                if self.item.get("email", "").endswith("bilibili.com"):
+                if self.item.get("email", "").endswith("xxx.com"):
                     user_role = "'common'"  # 所有身份都是common
                 else:
                     user_role = "'common'"
@@ -64,7 +64,7 @@ class UserDao(object):
             update_email = self.user_auth(token)
             update_user_status, update_user_info = self.admin_user_status(update_email)
             if update_user_info.get("role", "") == "root" or \
-                    update_user_info.get("email", "") == "luoyadong@bilibili.com":
+                    update_user_info.get("email", "") == "xxx@xxx.com":
                 user_status, user_info = self.admin_user_status(self.item.get("email"))
                 if user_status:
                     sql = "UPDATE rango_user SET role='{}',u_status='{}'  WHERE u_email = '{}'". \
@@ -172,4 +172,4 @@ class UserDao(object):
 
 if __name__ == '__main__':
     handler = UserDao()
-    print(handler.admin_user_status("luoyadong@bilibili.com"))
+    print(handler.admin_user_status("xxx@xxx.com"))

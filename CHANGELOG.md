@@ -1,7 +1,7 @@
 # Changelog
-- rider: http://ops-rider.bilibili.co/App/Mybuild
-- caseter: http://uat-caster.bilibili.co/uat/app/7527
-- openapi: http://rango.bilibili.co/docs
+- rider: http://ops-rider.xxx.co/App/Mybuild
+- caseter: http://bat-caster.xxx.co/uat/app/7527
+- openapi: http://rango.xxx.co/docs
 
 ## 2021-08-04
 ### 功能描述
